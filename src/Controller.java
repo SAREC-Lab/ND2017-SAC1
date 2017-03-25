@@ -3,6 +3,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.geometry.*;
 import javafx.scene.control.*;
@@ -29,6 +30,9 @@ public class Controller extends Application {
 		Button justBtn = new Button("Justification");
 		Button cRelationBtn = new Button("Contextual Relationship");
 		Button sRelationBtn = new Button("Support Relationship");
+		// color picker 
+		final ColorPicker colorPicker = new ColorPicker();
+		colorPicker.setValue(Color.WHITE);
 		
 		ToolBar leftBar = new ToolBar();
 		leftBar.setOrientation(Orientation.VERTICAL);
@@ -41,6 +45,7 @@ public class Controller extends Application {
 				justBtn,
 				cRelationBtn,
 				sRelationBtn,
+				colorPicker,
 				new Separator());
 		
 		Button newBtn = new Button("New");
