@@ -17,7 +17,7 @@ public class Controller extends Application {
 	public void start(Stage windowStage) throws Exception {
 		root = new AnchorPane();
 		
-		scene = new Scene(root, 1200, 800);	// Hard coded temporarily
+		scene = new Scene(root, 1000, 563);	// Hard coded temporarily
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
 		windowStage.show();
