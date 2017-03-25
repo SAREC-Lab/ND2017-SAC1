@@ -1,3 +1,4 @@
+package SAC;
 import java.util.ArrayDeque;
 
 import Node.MainNode;
@@ -54,7 +55,7 @@ public class SAC {
 					MainNode thisMainNode = (MainNode) thisNode;
 					MainNode otherMainNode = (MainNode) otherNode;
 					
-					if (thisMainNode.getChildren() != otherMainNode.getChildren()) {
+					if (!thisMainNode.getChildren().equals(otherMainNode.getChildren())) {
 						return false;
 					}
 				}
