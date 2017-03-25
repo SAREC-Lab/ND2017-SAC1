@@ -1,10 +1,12 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.geometry.*;
 import javafx.scene.control.*;
+import javafx.scene.text.*;
+import javafx.scene.shape.*;
+import javafx.scene.paint.*;
 
 
 public class Controller extends Application {
@@ -20,18 +22,57 @@ public class Controller extends Application {
 	public void start(Stage windowStage) throws Exception {
 		root = new BorderPane();
 		
+		createToolBars();
+		
+		Text title1 = new Text("ToolBox");
+		Text title2 = new Text("Style");
+		
+		Rectangle r1 = new Rectangle(15,10);
+		r1.setStroke(Color.BLACK);
+		r1.setFill(null);
 		Button goalBtn = new Button("Goal");
+		goalBtn.setMaxWidth(200);
+		goalBtn.setGraphic(r1);
+		
+		
 		Button contextBtn = new Button("Context");
+		contextBtn.setMaxWidth(200);
+		Rectangle r2 = new Rectangle(20,10);
+		r2.setStroke(Color.BLACK);
+		r2.setArcHeight(15);
+		r2.setArcWidth(15);
+		r2.setFill(null);
+		contextBtn.setGraphic(r2);
+		
 		Button strategyBtn = new Button("Strategy");
+		strategyBtn.setMaxWidth(200);
+		Polygon parallelogram = new Polygon();
+		parallelogram.setFill(null);
+		parallelogram.getPoints().addAll(30.0, 0.0,
+                130.0, 0.0, 
+                120.00, 50.0, 
+                0.0, 50.0);
+		strategyBtn.setGraphic(parallelogram);
+		
 		Button solutionBtn = new Button("Solution");
+		solutionBtn.setMaxWidth(200);
 		Button assumBtn = new Button("Assumption");
+		assumBtn.setMaxWidth(200);
 		Button justBtn = new Button("Justification");
+		justBtn.setMaxWidth(200);
 		Button cRelationBtn = new Button("Contextual Relationship");
+		cRelationBtn.setMaxWidth(200);
 		Button sRelationBtn = new Button("Support Relationship");
+		sRelationBtn.setMaxWidth(200);
+		Button fillBtn = new Button("Fill");
+		fillBtn.setMaxWidth(200);
+		Button outlineBtn = new Button("Outline");
+		outlineBtn.setMaxWidth(200);
 		
 		ToolBar leftBar = new ToolBar();
 		leftBar.setOrientation(Orientation.VERTICAL);
-		leftBar.getItems().addAll(new Separator(), 
+		leftBar.getItems().addAll( title1,
+				new Separator(), 
 				goalBtn,
 				contextBtn,
 				strategyBtn,
@@ -40,7 +81,11 @@ public class Controller extends Application {
 				justBtn,
 				cRelationBtn,
 				sRelationBtn,
-				new Separator());
+				new Separator(),
+				title2,
+				new Separator(),
+				fillBtn,
+				outlineBtn);
 		
 		Button newBtn = new Button("New");
 		Button importBtn = new Button("Import");
@@ -49,7 +94,7 @@ public class Controller extends Application {
 		
 		ToolBar topBar = new ToolBar();
 		topBar.prefWidthProperty().bind(windowStage.widthProperty());
-		topBar.getItems().addAll(
+		topBar.getItems().addAll( 
 				newBtn,
 				importBtn,
 				exportBtn,
@@ -64,4 +109,9 @@ public class Controller extends Application {
 		windowStage.setTitle("Safety Assurance Case Editor");
 		windowStage.show();
 	}
+
+
+public void createToolBars(){
+
+}
 }
