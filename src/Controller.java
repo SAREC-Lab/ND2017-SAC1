@@ -1,7 +1,8 @@
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.geometry.*;
 import javafx.scene.control.*;
@@ -55,13 +56,42 @@ public class Controller extends Application {
 				exportBtn,
 				saveBtn);
 		
+		initializeTabPane();
+		
 		root.setLeft(leftBar);
 		root.setTop(topBar);
-		
 		
 		scene = new Scene(root, 1000, 563);	// Hard coded temporarily
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
 		windowStage.show();
+	}
+	
+	private void initializeTabPane() {
+		 final TabPane tabPane = new TabPane();
+		 final Tab addTab = new Tab("+");
+		 addTab.setClosable(false);
+		 tabPane.getTabs().add(addTab);
+		 createNewTab(tabPane);
+		 
+		 // Add listener so that when "+" tab clicked, new tab is created
+		 tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+		      @Override
+		      public void changed(ObservableValue<? extends Tab> observable,
+		          Tab oldTab, Tab newTab) {
+		        if (newTab == addTab) {
+		          createNewTab(tabPane);
+		        }
+		      }
+		    });
+		 
+		 root.setCenter(tabPane);
+	}
+	
+	private void createNewTab(TabPane tabPane) {
+		Tab newTab = new Tab("unnamed.sac");
+		newTab.setContent(new ScrollPane());	// Scroll pane within each tab
+	    tabPane.getTabs().add(tabPane.getTabs().size() - 1, newTab);
+	    tabPane.getSelectionModel().select(newTab);
 	}
 }
