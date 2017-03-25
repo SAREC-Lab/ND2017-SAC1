@@ -1,6 +1,9 @@
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.geometry.*;
 import javafx.scene.control.*;
@@ -21,8 +24,6 @@ public class Controller extends Application {
 	@Override
 	public void start(Stage windowStage) throws Exception {
 		root = new BorderPane();
-		
-		createToolBars();
 		
 		Text title1 = new Text("ToolBox");
 		Text title2 = new Text("Style");
@@ -63,11 +64,17 @@ public class Controller extends Application {
 		Button cRelationBtn = new Button("Contextual Relationship");
 		cRelationBtn.setMaxWidth(200);
 		Button sRelationBtn = new Button("Support Relationship");
+
 		sRelationBtn.setMaxWidth(200);
 		Button fillBtn = new Button("Fill");
 		fillBtn.setMaxWidth(200);
 		Button outlineBtn = new Button("Outline");
 		outlineBtn.setMaxWidth(200);
+		
+		// color picker 
+		final ColorPicker colorPicker = new ColorPicker();
+		colorPicker.setValue(Color.WHITE);
+
 		
 		ToolBar leftBar = new ToolBar();
 		leftBar.setOrientation(Orientation.VERTICAL);
@@ -85,7 +92,9 @@ public class Controller extends Application {
 				title2,
 				new Separator(),
 				fillBtn,
-				outlineBtn);
+				outlineBtn,
+				colorPicker,
+				new Separator());
 		
 		Button newBtn = new Button("New");
 		Button importBtn = new Button("Import");
@@ -100,18 +109,43 @@ public class Controller extends Application {
 				exportBtn,
 				saveBtn);
 		
+		initializeTabPane();
+		
 		root.setLeft(leftBar);
 		root.setTop(topBar);
-		
 		
 		scene = new Scene(root, 1000, 563);	// Hard coded temporarily
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
 		windowStage.show();
 	}
+	
+	private void initializeTabPane() {
+		 final TabPane tabPane = new TabPane();
+		 final Tab addTab = new Tab("+");
+		 addTab.setClosable(false);
+		 tabPane.getTabs().add(addTab);
+		 createNewTab(tabPane);
+		 
+		 // Add listener so that when "+" tab clicked, new tab is created
+		 tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+		      @Override
+		      public void changed(ObservableValue<? extends Tab> observable,
+		          Tab oldTab, Tab newTab) {
+		        if (newTab == addTab) {
+		          createNewTab(tabPane);
+		        }
+		      }
+		    });
+		 
+		 root.setCenter(tabPane);
+	}
+	
+	private void createNewTab(TabPane tabPane) {
+		Tab newTab = new Tab("unnamed.sac");
+		newTab.setContent(new ScrollPane());	// Scroll pane within each tab
+	    tabPane.getTabs().add(tabPane.getTabs().size() - 1, newTab);
+	    tabPane.getSelectionModel().select(newTab);
+	}
 
-
-public void createToolBars(){
-
-}
 }
