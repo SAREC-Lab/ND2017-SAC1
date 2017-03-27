@@ -47,6 +47,7 @@ public abstract class Node {
 		coordinates = c;
 	}
 	
+	@Override
 	public int hashCode() {
 		return 31 
 				* (7 + getName().hashCode()) 
@@ -54,6 +55,7 @@ public abstract class Node {
 				* (41 + getNodeType().hashCode());
 	}
 	
+	@Override
 	public boolean equals(Object other) {
 		if (other == this) {
 			return true;

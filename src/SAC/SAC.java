@@ -24,6 +24,7 @@ public class SAC {
 		return rootNode;
 	}
 	
+	@Override
 	public boolean equals(Object other) {
 		if (other == this) {
 			return true;
