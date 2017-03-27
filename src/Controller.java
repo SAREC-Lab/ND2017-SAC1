@@ -28,15 +28,19 @@ public class Controller extends Application {
 		Text title1 = new Text("ToolBox");
 		Text title2 = new Text("Style");
 		
+		// Group for tools so only one can be toggled at a time
+		final ToggleGroup toolGroup = new ToggleGroup();
+		
 		Rectangle r1 = new Rectangle(15,10);
 		r1.setStroke(Color.BLACK);
 		r1.setFill(null);
-		Button goalBtn = new Button("Goal");
+		ToggleButton goalBtn = new ToggleButton("Goal");
 		goalBtn.setMaxWidth(200);
 		goalBtn.setGraphic(r1);
+		goalBtn.setToggleGroup(toolGroup);
 		
 		
-		Button contextBtn = new Button("Context");
+		ToggleButton contextBtn = new ToggleButton("Context");
 		contextBtn.setMaxWidth(200);
 		Rectangle r2 = new Rectangle(20,10);
 		r2.setStroke(Color.BLACK);
@@ -44,8 +48,9 @@ public class Controller extends Application {
 		r2.setArcWidth(10);
 		r2.setFill(null);
 		contextBtn.setGraphic(r2);
+		contextBtn.setToggleGroup(toolGroup);
 		
-		Button strategyBtn = new Button("Strategy");
+		ToggleButton strategyBtn = new ToggleButton("Strategy");
 		strategyBtn.setMaxWidth(200);
 		Polygon parallelogram = new Polygon();
 		parallelogram.setFill(null);
@@ -56,9 +61,11 @@ public class Controller extends Application {
 		parallelogram.setStrokeType(StrokeType.OUTSIDE);
 		parallelogram.setStroke(Color.BLACK);
 		strategyBtn.setGraphic(parallelogram);
+		strategyBtn.setToggleGroup(toolGroup);
 		
-		Button solutionBtn = new Button("Solution");
+		ToggleButton solutionBtn = new ToggleButton("Solution");
 		solutionBtn.setMaxWidth(200);
+
 		Circle c = new Circle();
 		c.setRadius(6);
 		c.setFill(null);
@@ -67,9 +74,11 @@ public class Controller extends Application {
 		c.setCenterX(50.0);
 		c.setCenterY(10.0);
 		solutionBtn.setGraphic(c);
+		solutionBtn.setToggleGroup(toolGroup);
 		
-		Button assumBtn = new Button("Assumption");
+		ToggleButton assumBtn = new ToggleButton("Assumption");
 		assumBtn.setMaxWidth(200);
+		assumBtn.setToggleGroup(toolGroup);
 		Rectangle r3 = new Rectangle(20,10);
 		r3.setStroke(Color.BLACK);
 		r3.setArcHeight(20);
@@ -77,9 +86,9 @@ public class Controller extends Application {
 		r3.setFill(null);
 		assumBtn.setGraphic(r3);
 		
-		
-		Button justBtn = new Button("Justification");
+		ToggleButton justBtn = new ToggleButton("Justification");
 		justBtn.setMaxWidth(200);
+		justBtn.setToggleGroup(toolGroup);
 		Rectangle r4 = new Rectangle(20,10);
 		r4.setStroke(Color.BLACK);
 		r4.setArcHeight(20);
@@ -87,16 +96,20 @@ public class Controller extends Application {
 		r4.setFill(null);
 		justBtn.setGraphic(r4);
 		
-		
-		Button cRelationBtn = new Button("Contextual Relationship");
+		ToggleButton cRelationBtn = new ToggleButton("Contextual Relationship");
 		cRelationBtn.setMaxWidth(200);
-		Button sRelationBtn = new Button("Support Relationship");
-
+		cRelationBtn.setToggleGroup(toolGroup);
+		ToggleButton sRelationBtn = new ToggleButton("Support Relationship");
 		sRelationBtn.setMaxWidth(200);
-		Button fillBtn = new Button("Fill");
+		sRelationBtn.setToggleGroup(toolGroup);
+		
+		final ToggleGroup fillGroup = new ToggleGroup();
+		ToggleButton fillBtn = new ToggleButton("Fill");
 		fillBtn.setMaxWidth(200);
-		Button outlineBtn = new Button("Outline");
+		fillBtn.setToggleGroup(fillGroup);
+		ToggleButton outlineBtn = new ToggleButton("Outline");
 		outlineBtn.setMaxWidth(200);
+		outlineBtn.setToggleGroup(fillGroup);
 		
 		// color picker 
 		final ColorPicker colorPicker = new ColorPicker();
