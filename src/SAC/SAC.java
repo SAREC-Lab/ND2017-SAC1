@@ -8,6 +8,8 @@ import Node.NodeType;
 public class SAC {
 	Node rootNode;
 	
+	public SAC() { }
+	
 	public SAC(Node rn) {
 		setRootNode(rn);
 	}
