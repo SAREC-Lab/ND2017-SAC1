@@ -40,8 +40,8 @@ public class Controller extends Application {
 		contextBtn.setMaxWidth(200);
 		Rectangle r2 = new Rectangle(20,10);
 		r2.setStroke(Color.BLACK);
-		r2.setArcHeight(15);
-		r2.setArcWidth(15);
+		r2.setArcHeight(10);
+		r2.setArcWidth(10);
 		r2.setFill(null);
 		contextBtn.setGraphic(r2);
 		
@@ -49,18 +49,45 @@ public class Controller extends Application {
 		strategyBtn.setMaxWidth(200);
 		Polygon parallelogram = new Polygon();
 		parallelogram.setFill(null);
-		parallelogram.getPoints().addAll(30.0, 0.0,
-                130.0, 0.0, 
-                120.00, 50.0, 
-                0.0, 50.0);
+        parallelogram.getPoints().addAll(5.0, 0.0,
+                20.0, 0.0, 
+                15.0, 9.0, 
+                0.0, 9.0);
+		parallelogram.setStrokeType(StrokeType.OUTSIDE);
+		parallelogram.setStroke(Color.BLACK);
 		strategyBtn.setGraphic(parallelogram);
 		
 		Button solutionBtn = new Button("Solution");
 		solutionBtn.setMaxWidth(200);
+		Circle c = new Circle();
+		c.setRadius(6);
+		c.setFill(null);
+		c.setStrokeType(StrokeType.OUTSIDE);
+		c.setStroke(Color.BLACK);
+		c.setCenterX(50.0);
+		c.setCenterY(10.0);
+		solutionBtn.setGraphic(c);
+		
 		Button assumBtn = new Button("Assumption");
 		assumBtn.setMaxWidth(200);
+		Rectangle r3 = new Rectangle(20,10);
+		r3.setStroke(Color.BLACK);
+		r3.setArcHeight(20);
+		r3.setArcWidth(20);
+		r3.setFill(null);
+		assumBtn.setGraphic(r3);
+		
+		
 		Button justBtn = new Button("Justification");
 		justBtn.setMaxWidth(200);
+		Rectangle r4 = new Rectangle(20,10);
+		r4.setStroke(Color.BLACK);
+		r4.setArcHeight(20);
+		r4.setArcWidth(20);
+		r4.setFill(null);
+		justBtn.setGraphic(r4);
+		
+		
 		Button cRelationBtn = new Button("Contextual Relationship");
 		cRelationBtn.setMaxWidth(200);
 		Button sRelationBtn = new Button("Support Relationship");
@@ -119,6 +146,7 @@ public class Controller extends Application {
 		windowStage.setTitle("Safety Assurance Case Editor");
 		windowStage.show();
 	}
+
 	
 	private void initializeTabPane() {
 		 final TabPane tabPane = new TabPane();
