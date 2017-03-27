@@ -21,11 +21,19 @@ public class SAC {
 	}
 	
 	public Node getRootNode() {
+		if (rootNode == null) {
+			throw new NullPointerException("rootNode is null");
+		}
+		
 		return rootNode;
 	}
 	
 	@Override
 	public boolean equals(Object other) {
+		if (rootNode == null) {
+			throw new NullPointerException("rootNode is null");
+		}
+		
 		if (other == this) {
 			return true;
 		}
