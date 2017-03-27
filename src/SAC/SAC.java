@@ -25,11 +25,6 @@ public class SAC {
 	}
 	
 	@Override
-	public int hashCode() {
-		return rootNode.hashCode();
-	}
-	
-	@Override
 	public boolean equals(Object other) {
 		if (other == this) {
 			return true;
