@@ -1,5 +1,9 @@
+import java.awt.Point;
+import java.util.Observable;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,6 +15,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -20,10 +25,11 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class View {
+public class View extends Observable {
 	
 	Scene scene;
 	BorderPane root;
+	Point clickLocation;
 	
 	public View(Stage windowStage) {
 		root = new BorderPane();
@@ -157,6 +163,7 @@ public class View {
 		root.setLeft(leftBar);
 		root.setTop(topBar);
 		
+		clickLocation = new Point();
 		scene = new Scene(root, 1000, 563);	// Hard coded temporarily
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
@@ -187,9 +194,27 @@ public class View {
 	
 	private void createNewTab(TabPane tabPane) {
 		Tab newTab = new Tab("unnamed.sac");
-		newTab.setContent(new ScrollPane());	// Scroll pane within each tab
+		ScrollPane scrollPane = new ScrollPane();
+		
+		// Handle clicks directly to pane by delegating to observing controller
+		scrollPane.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                clickLocation.x = (int)mouseEvent.getX();
+                clickLocation.y = (int)mouseEvent.getY();
+                setChanged();
+                notifyObservers();
+            }
+        });
+		
+		newTab.setContent(scrollPane);	// Scroll pane within each tab
 	    tabPane.getTabs().add(tabPane.getTabs().size() - 1, newTab);
 	    tabPane.getSelectionModel().select(newTab);
 	}
 
+	public Point getClickLocation() {
+		return clickLocation;
+	}
+	
 }

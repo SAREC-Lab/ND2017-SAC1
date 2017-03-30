@@ -1,15 +1,28 @@
-import javafx.application.Application;
-import javafx.stage.Stage;
+import java.awt.Point;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Controller extends Application {
+public class Controller implements Observer{
+
+	View view;
+	Point clickLocation;
 	
-	public static void main(String[] args) {
-		launch(args);
+	public Controller(View v) {
+		this.view = v;
+		view.addObserver(this);
 	}
 	
+	// Observe view to handle clicks inside tabs
 	@Override
-	public void start(Stage windowStage) throws Exception {
-		View view = new View(windowStage);
+	public void update(Observable v, Object arg) {
+		if (v instanceof View) {
+			clickLocation = ((View)v).getClickLocation();
+			handleClick();
+		}		
 	}
-
+	
+	private void handleClick() {
+		System.out.println(clickLocation.x + "," + clickLocation.y);
+	}
+	
 }
