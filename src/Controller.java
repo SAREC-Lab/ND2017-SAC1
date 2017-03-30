@@ -22,7 +22,11 @@ public class Controller implements Observer{
 	}
 	
 	private void handleClick() {
-		System.out.println(clickLocation.x + "," + clickLocation.y);
+		if (view.getSelectedNodeType() == null)
+			return;
+		
+		System.out.println(view.getSelectedNodeType().toString() + ": " + clickLocation.x + "," + clickLocation.y);
+		view.deselectToggledNode();
 	}
 	
 }

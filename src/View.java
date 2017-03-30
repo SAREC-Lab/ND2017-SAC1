@@ -1,6 +1,7 @@
 import java.awt.Point;
 import java.util.Observable;
 
+import Node.NodeType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -30,6 +31,7 @@ public class View extends Observable {
 	Scene scene;
 	BorderPane root;
 	Point clickLocation;
+	final ToggleGroup toolGroup;
 	
 	public View(Stage windowStage) {
 		root = new BorderPane();
@@ -38,7 +40,7 @@ public class View extends Observable {
 		Text title2 = new Text("Style");
 		
 		// Group for tools so only one can be toggled at a time
-		final ToggleGroup toolGroup = new ToggleGroup();
+		toolGroup = new ToggleGroup();
 		
 		Rectangle r1 = new Rectangle(15,10);
 		r1.setStroke(Color.BLACK);
@@ -47,6 +49,7 @@ public class View extends Observable {
 		goalBtn.setMaxWidth(200);
 		goalBtn.setGraphic(r1);
 		goalBtn.setToggleGroup(toolGroup);
+		goalBtn.setUserData(NodeType.GOAL);
 		
 		
 		ToggleButton contextBtn = new ToggleButton("Context");
@@ -58,6 +61,7 @@ public class View extends Observable {
 		r2.setFill(null);
 		contextBtn.setGraphic(r2);
 		contextBtn.setToggleGroup(toolGroup);
+		contextBtn.setUserData(NodeType.CONTEXT);
 		
 		ToggleButton strategyBtn = new ToggleButton("Strategy");
 		strategyBtn.setMaxWidth(200);
@@ -71,6 +75,7 @@ public class View extends Observable {
 		parallelogram.setStroke(Color.BLACK);
 		strategyBtn.setGraphic(parallelogram);
 		strategyBtn.setToggleGroup(toolGroup);
+		strategyBtn.setUserData(NodeType.STRATEGY);
 		
 		ToggleButton solutionBtn = new ToggleButton("Solution");
 		solutionBtn.setMaxWidth(200);
@@ -84,6 +89,7 @@ public class View extends Observable {
 		c.setCenterY(10.0);
 		solutionBtn.setGraphic(c);
 		solutionBtn.setToggleGroup(toolGroup);
+		solutionBtn.setUserData(NodeType.SOLUTION);
 		
 		ToggleButton assumBtn = new ToggleButton("Assumption");
 		assumBtn.setMaxWidth(200);
@@ -94,6 +100,7 @@ public class View extends Observable {
 		r3.setArcWidth(20);
 		r3.setFill(null);
 		assumBtn.setGraphic(r3);
+		assumBtn.setUserData(NodeType.ASSUMPTION);
 		
 		ToggleButton justBtn = new ToggleButton("Justification");
 		justBtn.setMaxWidth(200);
@@ -104,6 +111,7 @@ public class View extends Observable {
 		r4.setArcWidth(20);
 		r4.setFill(null);
 		justBtn.setGraphic(r4);
+		justBtn.setUserData(NodeType.JUSTIFICATION);
 		
 		ToggleButton cRelationBtn = new ToggleButton("Contextual Relationship");
 		cRelationBtn.setMaxWidth(200);
@@ -215,6 +223,20 @@ public class View extends Observable {
 
 	public Point getClickLocation() {
 		return clickLocation;
+	}
+	
+	// Return which node type is selected
+	public NodeType getSelectedNodeType() {
+		if (toolGroup.getSelectedToggle() == null) {
+			return null;
+		} else {
+			return (NodeType)toolGroup.getSelectedToggle().getUserData();
+		}
+	}
+	
+	// Deselect toggled node
+	public void deselectToggledNode() {
+		toolGroup.getSelectedToggle().setSelected(false);
 	}
 	
 }
