@@ -1,6 +1,12 @@
 import java.awt.Point;
 import java.util.Observable;
 
+import Drawing.CircleStrategy;
+import Drawing.EllipseStrategy;
+import Drawing.NodeDrawer;
+import Drawing.ParallelogramStrategy;
+import Drawing.RectangleStrategy;
+import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -18,6 +24,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
@@ -30,6 +37,8 @@ public class View extends Observable {
 	
 	Scene scene;
 	BorderPane root;
+	TabPane tabPane;
+	NodeDrawer nodeDrawer;
 	Point clickLocation;
 	final ToggleGroup toolGroup;
 	
@@ -172,6 +181,7 @@ public class View extends Observable {
 		root.setTop(topBar);
 		
 		clickLocation = new Point();
+		nodeDrawer = new NodeDrawer();
 		scene = new Scene(root, 1000, 563);	// Hard coded temporarily
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
@@ -180,7 +190,7 @@ public class View extends Observable {
 
 	
 	private void initializeTabPane() {
-		 final TabPane tabPane = new TabPane();
+		 tabPane = new TabPane();
 		 final Tab addTab = new Tab("+");
 		 addTab.setClosable(false);
 		 tabPane.getTabs().add(addTab);
@@ -203,6 +213,8 @@ public class View extends Observable {
 	private void createNewTab(TabPane tabPane) {
 		Tab newTab = new Tab("unnamed.sac");
 		ScrollPane scrollPane = new ScrollPane();
+		Pane workPane = new Pane();
+		scrollPane.setContent(workPane);
 		
 		// Handle clicks directly to pane by delegating to observing controller
 		scrollPane.setOnMouseClicked(new EventHandler<MouseEvent>()
@@ -237,6 +249,27 @@ public class View extends Observable {
 	// Deselect toggled node
 	public void deselectToggledNode() {
 		toolGroup.getSelectedToggle().setSelected(false);
+	}
+	
+	public void drawNode(Node node) {
+		switch (node.getNodeType()) {
+		case GOAL:
+		case CONTEXT:
+			nodeDrawer.setStrategy(new RectangleStrategy());
+			break;
+		case STRATEGY:
+			nodeDrawer.setStrategy(new ParallelogramStrategy());
+			break;
+		case SOLUTION:
+			nodeDrawer.setStrategy(new CircleStrategy());
+			break;
+		case JUSTIFICATION:
+		case ASSUMPTION:
+			nodeDrawer.setStrategy(new EllipseStrategy());
+			break;
+		}
+		
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(nodeDrawer.drawNode(node));
 	}
 	
 }
