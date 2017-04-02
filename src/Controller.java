@@ -30,9 +30,7 @@ public class Controller implements Observer{
 		NodeType type = view.getSelectedNodeType();
 		if (type == null)
 			return;
-		
-		System.out.println(view.getSelectedNodeType().toString() + ": " + clickLocation.x + "," + clickLocation.y);
-		
+				
 		Node newNode;
 		if (type == NodeType.GOAL || type == NodeType.STRATEGY || type == NodeType.SOLUTION) {
 			newNode = new MainNode("name", "description", view.getSelectedNodeType(), clickLocation);
@@ -41,6 +39,8 @@ public class Controller implements Observer{
 		}
 		view.drawNode(newNode);
 		view.deselectToggledNode();
+		
+		// TODO : Add newNode to model
 	}
 	
 }

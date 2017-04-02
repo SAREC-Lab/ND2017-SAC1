@@ -26,6 +26,7 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -33,6 +34,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -47,7 +49,7 @@ public class View extends Observable {
 	Point clickLocation;
 	final ToggleGroup toolGroup;
 	ColorPicker outlinePicker, fillPicker;
-	
+		
 	public View(Stage windowStage) {
 		root = new BorderPane();
 		
@@ -258,6 +260,7 @@ public class View extends Observable {
 		Tab newTab = new Tab("unnamed.sac");
 		ScrollPane scrollPane = new ScrollPane();
 		Pane workPane = new Pane();
+		workPane.setMinSize(1500, 1500);	// TODO: Make pane expand as dragging of nodes occurs
 		scrollPane.setContent(workPane);
 		
 		// Handle clicks directly to pane by delegating to observing controller
@@ -295,6 +298,7 @@ public class View extends Observable {
 		toolGroup.getSelectedToggle().setSelected(false);
 	}
 	
+	// Set nodedrawer strategy and draw node adding it to pane
 	public void drawNode(Node node) {
 		switch (node.getNodeType()) {
 		case GOAL:
@@ -313,7 +317,41 @@ public class View extends Observable {
 			break;
 		}
 		
-		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue()));
+		Shape drawnNode = nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue());
+		addEventHandlersToNode(drawnNode, node);
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(drawnNode);
 	}
 	
+	// Add clicking and dragging event handlers to nodes
+	private void addEventHandlersToNode(Shape shape, Node node) {
+		final Point originalTranslation = new Point();
+		
+		shape.setOnMousePressed(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+            	shape.toFront();
+            	clickLocation.x = (int) mouseEvent.getSceneX();
+            	clickLocation.y = (int) mouseEvent.getSceneY();
+            	originalTranslation.x = (int) shape.getTranslateX();
+            	originalTranslation.y = (int) shape.getTranslateY();
+            }
+        });
+		
+		shape.setOnMouseDragged(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+            	double offsetX = mouseEvent.getSceneX() - clickLocation.getX();
+                double offsetY = mouseEvent.getSceneY() - clickLocation.getY();
+                double newTranslateX = originalTranslation.getX() + offsetX;
+                double newTranslateY = originalTranslation.getY() + offsetY;
+                 
+                shape.setTranslateX(newTranslateX);
+                shape.setTranslateY(newTranslateY);
+                
+                // TODO: Update model with new coordinates
+            }
+        });
+	}
 }
