@@ -12,6 +12,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
@@ -25,13 +26,17 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 
 public class View extends Observable {
 	
@@ -41,6 +46,7 @@ public class View extends Observable {
 	NodeDrawer nodeDrawer;
 	Point clickLocation;
 	final ToggleGroup toolGroup;
+	ColorPicker outlinePicker, fillPicker;
 	
 	public View(Stage windowStage) {
 		root = new BorderPane();
@@ -51,16 +57,17 @@ public class View extends Observable {
 		// Group for tools so only one can be toggled at a time
 		toolGroup = new ToggleGroup();
 		
+		//Goal Button
+		ToggleButton goalBtn = new ToggleButton("Goal");
+		goalBtn.setMaxWidth(200);
 		Rectangle r1 = new Rectangle(15,10);
 		r1.setStroke(Color.BLACK);
 		r1.setFill(null);
-		ToggleButton goalBtn = new ToggleButton("Goal");
-		goalBtn.setMaxWidth(200);
 		goalBtn.setGraphic(r1);
 		goalBtn.setToggleGroup(toolGroup);
 		goalBtn.setUserData(NodeType.GOAL);
 		
-		
+		//Context Button
 		ToggleButton contextBtn = new ToggleButton("Context");
 		contextBtn.setMaxWidth(200);
 		Rectangle r2 = new Rectangle(20,10);
@@ -72,6 +79,7 @@ public class View extends Observable {
 		contextBtn.setToggleGroup(toolGroup);
 		contextBtn.setUserData(NodeType.CONTEXT);
 		
+		//Strategy Button
 		ToggleButton strategyBtn = new ToggleButton("Strategy");
 		strategyBtn.setMaxWidth(200);
 		Polygon parallelogram = new Polygon();
@@ -86,9 +94,9 @@ public class View extends Observable {
 		strategyBtn.setToggleGroup(toolGroup);
 		strategyBtn.setUserData(NodeType.STRATEGY);
 		
+		//Solution Button
 		ToggleButton solutionBtn = new ToggleButton("Solution");
 		solutionBtn.setMaxWidth(200);
-
 		Circle c = new Circle();
 		c.setRadius(6);
 		c.setFill(null);
@@ -100,6 +108,7 @@ public class View extends Observable {
 		solutionBtn.setToggleGroup(toolGroup);
 		solutionBtn.setUserData(NodeType.SOLUTION);
 		
+		//Assumption Button
 		ToggleButton assumBtn = new ToggleButton("Assumption");
 		assumBtn.setMaxWidth(200);
 		assumBtn.setToggleGroup(toolGroup);
@@ -111,6 +120,7 @@ public class View extends Observable {
 		assumBtn.setGraphic(r3);
 		assumBtn.setUserData(NodeType.ASSUMPTION);
 		
+		//Justification Button
 		ToggleButton justBtn = new ToggleButton("Justification");
 		justBtn.setMaxWidth(200);
 		justBtn.setToggleGroup(toolGroup);
@@ -122,25 +132,61 @@ public class View extends Observable {
 		justBtn.setGraphic(r4);
 		justBtn.setUserData(NodeType.JUSTIFICATION);
 		
+		
+		//Contextual Relationship Button
+		HBox hBox = new HBox();
+		Line line = new Line(0, 0,
+				7,   0);
+		line.setStrokeWidth(1.5);
+		hBox.setAlignment(Pos.CENTER);
+		Polygon arrowHead = new Polygon();
+		arrowHead.getPoints().addAll(0.0, 0.0,
+				0.0, -10.0,
+				10.0, -5.0);
+		hBox.getChildren().addAll(line, arrowHead);
 		ToggleButton cRelationBtn = new ToggleButton("Contextual Relationship");
 		cRelationBtn.setMaxWidth(200);
 		cRelationBtn.setToggleGroup(toolGroup);
+		cRelationBtn.setGraphic(hBox);
+		
+		
+		//Support Relationship Button
+		HBox hBox2 = new HBox();
+		Line line2 = new Line(0, 0,
+				7,   0);
+		line2.setStrokeWidth(1.5);
+		hBox2.setAlignment(Pos.CENTER);
+		Polygon arrowHead2 = new Polygon();
+		arrowHead2.setFill(null);
+		arrowHead2.setStroke(Color.BLACK);
+		arrowHead2.setStrokeWidth(1.5);
+		arrowHead2.getPoints().addAll(0.0, 0.0,
+				0.0, -8.6,
+				8.6, -4.3);
+		hBox2.getChildren().addAll(line2, arrowHead2);
 		ToggleButton sRelationBtn = new ToggleButton("Support Relationship");
 		sRelationBtn.setMaxWidth(200);
 		sRelationBtn.setToggleGroup(toolGroup);
+		sRelationBtn.setGraphic(hBox2);
 		
-		final ToggleGroup fillGroup = new ToggleGroup();
-		ToggleButton fillBtn = new ToggleButton("Fill");
-		fillBtn.setMaxWidth(200);
-		fillBtn.setToggleGroup(fillGroup);
-		ToggleButton outlineBtn = new ToggleButton("Outline");
-		outlineBtn.setMaxWidth(200);
-		outlineBtn.setToggleGroup(fillGroup);
+		//Fill Button
+		Text fillTitle = new Text("Fill");
+		fillPicker = new ColorPicker();
+		fillPicker.setValue(Color.WHITE);
 		
-		// color picker 
-		final ColorPicker colorPicker = new ColorPicker();
-		colorPicker.setValue(Color.WHITE);
-
+		//Outline Button
+		Text outlineTitle = new Text("Outline");
+		outlinePicker = new ColorPicker();
+		outlinePicker.setValue(Color.BLACK);		
+		
+		GridPane grid = new GridPane();
+		grid.setVgap(10);
+		grid.setHgap(3);
+		grid.add(fillTitle,0,0);
+		grid.add(fillPicker, 1, 0);
+		grid.add(outlineTitle, 0, 1);
+		grid.add(outlinePicker,1,1);
+		
 		
 		ToolBar leftBar = new ToolBar();
 		leftBar.setOrientation(Orientation.VERTICAL);
@@ -157,9 +203,7 @@ public class View extends Observable {
 				new Separator(),
 				title2,
 				new Separator(),
-				fillBtn,
-				outlineBtn,
-				colorPicker,
+				grid,
 				new Separator());
 		
 		Button newBtn = new Button("New");
@@ -269,8 +313,7 @@ public class View extends Observable {
 			break;
 		}
 		
-		// Hardcoded colors passed until color pickers ready
-		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(nodeDrawer.drawNode(node, Color.BLACK, Color.WHITE));
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue()));
 	}
 	
 }
