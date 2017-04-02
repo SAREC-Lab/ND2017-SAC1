@@ -264,7 +264,7 @@ public class View extends Observable {
 		scrollPane.setContent(workPane);
 		
 		// Handle clicks directly to pane by delegating to observing controller
-		scrollPane.setOnMouseClicked(new EventHandler<MouseEvent>()
+		workPane.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
             public void handle(MouseEvent mouseEvent) {
