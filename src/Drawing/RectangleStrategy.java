@@ -9,12 +9,12 @@ import javafx.scene.shape.Shape;
 public class RectangleStrategy implements NodeDrawingStrategy {
 
 	@Override
-	public Shape drawNode(Node node) {
+	public Shape drawNode(Node node, Color outline, Color fill) {
 		Rectangle rect = new Rectangle(node.getCoordinates().getX(), node.getCoordinates().getY(), 100, 50);
 		
 		// Hard coded for now
-		rect.setStroke(Color.BLACK);
-		rect.setFill(Color.WHITE);
+		rect.setStroke(outline);
+		rect.setFill(fill);
 		
 		if (node.getNodeType() == NodeType.CONTEXT) {
 			rect.setArcHeight(50);

@@ -269,7 +269,8 @@ public class View extends Observable {
 			break;
 		}
 		
-		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(nodeDrawer.drawNode(node));
+		// Hardcoded colors passed until color pickers ready
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(nodeDrawer.drawNode(node, Color.BLACK, Color.WHITE));
 	}
 	
 }

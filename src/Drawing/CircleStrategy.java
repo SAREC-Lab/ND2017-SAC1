@@ -8,12 +8,12 @@ import javafx.scene.shape.Shape;
 public class CircleStrategy implements NodeDrawingStrategy {
 
 	@Override
-	public Shape drawNode(Node node) {
+	public Shape drawNode(Node node, Color outline, Color fill) {
 		Circle circle = new Circle(node.getCoordinates().getX(), node.getCoordinates().getY(), 30);
 		
 		// Hard coded for now
-		circle.setStroke(Color.BLACK);
-		circle.setFill(Color.WHITE);
+		circle.setStroke(outline);
+		circle.setFill(fill);
 
 		return circle;	
 	}
