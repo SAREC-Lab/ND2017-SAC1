@@ -42,4 +42,28 @@ public class SACTest {
 		assert(sac1.equals(sac2));
 	}
 
+	@Test
+	public void testExceptions() {
+		
+		SAC s1 = new SAC();
+		SAC s2 = new SAC();
+		
+		try {
+			s1.getRootNode();
+			assert(false);
+		}
+		catch (NullPointerException e){
+			
+		}
+		
+		try {
+			s1.equals(s2);
+			assert(false);
+		}
+		catch (NullPointerException e){
+			
+		}
+		
+		assert(true);
+	}
 }
