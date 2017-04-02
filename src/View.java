@@ -1,6 +1,7 @@
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
@@ -13,13 +14,17 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import java.awt.geom.*;
+
 
 public class View {
 	
@@ -104,15 +109,42 @@ public class View {
 		r4.setFill(null);
 		justBtn.setGraphic(r4);
 		
+		
 		//Contextual Relationship Button
+		HBox hBox = new HBox();
+		Line line = new Line(0, 0,
+				7,   0);
+		line.setStrokeWidth(1.5);
+		hBox.setAlignment(Pos.CENTER);
+		Polygon arrowHead = new Polygon();
+		arrowHead.getPoints().addAll(0.0, 0.0,
+				0.0, -10.0,
+				10.0, -5.0);
+		hBox.getChildren().addAll(line, arrowHead);
 		ToggleButton cRelationBtn = new ToggleButton("Contextual Relationship");
 		cRelationBtn.setMaxWidth(200);
 		cRelationBtn.setToggleGroup(toolGroup);
+		cRelationBtn.setGraphic(hBox);
+		
 		
 		//Support Relationship Button
+		HBox hBox2 = new HBox();
+		Line line2 = new Line(0, 0,
+				7,   0);
+		line2.setStrokeWidth(1.5);
+		hBox2.setAlignment(Pos.CENTER);
+		Polygon arrowHead2 = new Polygon();
+		arrowHead2.setFill(null);
+		arrowHead2.setStroke(Color.BLACK);
+		arrowHead2.setStrokeWidth(1.5);
+		arrowHead2.getPoints().addAll(0.0, 0.0,
+				0.0, -8.6,
+				8.6, -4.3);
+		hBox2.getChildren().addAll(line2, arrowHead2);
 		ToggleButton sRelationBtn = new ToggleButton("Support Relationship");
 		sRelationBtn.setMaxWidth(200);
 		sRelationBtn.setToggleGroup(toolGroup);
+		sRelationBtn.setGraphic(hBox2);
 		
 		//Fill Button
 		Text fillTitle = new Text("Fill");
