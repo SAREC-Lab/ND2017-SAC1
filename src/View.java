@@ -351,16 +351,27 @@ public class View extends Observable {
         {
             @Override
             public void handle(MouseEvent mouseEvent) {
+            	
             	double offsetX = mouseEvent.getSceneX() - clickLocation.getX();
                 double offsetY = mouseEvent.getSceneY() - clickLocation.getY();
                 double newTranslateX = originalTranslation.getX() + offsetX;
                 double newTranslateY = originalTranslation.getY() + offsetY;
-                 
+                
                 shape.setTranslateX(newTranslateX);
                 shape.setTranslateY(newTranslateY);
-                
-                node.setCoordinates(new Point((int)newTranslateX, (int)newTranslateY));
             }
         });
+		
+		shape.setOnMouseReleased(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				
+				double offsetX = mouseEvent.getSceneX() - clickLocation.getX();
+                double offsetY = mouseEvent.getSceneY() - clickLocation.getY();
+                
+                node.setCoordinates(new Point((int) (node.getCoordinates().getX() + offsetX), (int) (node.getCoordinates().getY() + offsetY)));
+			}
+		});
 	}
 }

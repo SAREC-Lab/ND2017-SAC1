@@ -33,10 +33,13 @@ public class Controller implements Observer{
 			return;
 				
 		Node newNode;
+		
+		Point nodeLocation = new Point((int) clickLocation.getX(), (int) clickLocation.getY());
+		
 		if (type == NodeType.GOAL || type == NodeType.STRATEGY || type == NodeType.SOLUTION) {
-			newNode = new MainNode("name", "description", view.getSelectedNodeType(), clickLocation);
+			newNode = new MainNode("name", "description", view.getSelectedNodeType(), nodeLocation);
 		} else {
-			newNode = new SupportingNode("name", "description", view.getSelectedNodeType(), clickLocation);
+			newNode = new SupportingNode("name", "description", view.getSelectedNodeType(), nodeLocation);
 		}
 		view.drawNode(newNode);
 		view.deselectToggledNode();
