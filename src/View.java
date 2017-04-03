@@ -45,12 +45,42 @@ public class View extends Observable {
 	TabPane tabPane;
 	NodeDrawer nodeDrawer;
 	Point clickLocation;
-	final ToggleGroup toolGroup;
+	ToggleGroup toolGroup;
 	ColorPicker outlinePicker, fillPicker;
 	
 	public View(Stage windowStage) {
 		root = new BorderPane();
 		
+		ToolBar leftBar = new ToolBar();
+		leftBar = createToolBox();
+		
+		Button newBtn = new Button("New");
+		Button importBtn = new Button("Import");
+		Button exportBtn = new Button("Export");
+		Button saveBtn = new Button("Save");
+		
+		ToolBar topBar = new ToolBar();
+		topBar.prefWidthProperty().bind(windowStage.widthProperty());
+		topBar.getItems().addAll( 
+				newBtn,
+				importBtn,
+				exportBtn,
+				saveBtn);
+		
+		initializeTabPane();
+		
+		root.setLeft(leftBar);
+		root.setTop(topBar);
+		
+		clickLocation = new Point();
+		nodeDrawer = new NodeDrawer();
+		scene = new Scene(root, 1000, 563);	// Hard coded temporarily
+		windowStage.setScene(scene);
+		windowStage.setTitle("Safety Assurance Case Editor");
+		windowStage.show();
+	}
+	
+	private ToolBar createToolBox() {
 		Text title1 = new Text("ToolBox");
 		Text title2 = new Text("Style");
 		
@@ -179,6 +209,7 @@ public class View extends Observable {
 		outlinePicker = new ColorPicker();
 		outlinePicker.setValue(Color.BLACK);		
 		
+		
 		GridPane grid = new GridPane();
 		grid.setVgap(10);
 		grid.setHgap(3);
@@ -187,7 +218,7 @@ public class View extends Observable {
 		grid.add(outlineTitle, 0, 1);
 		grid.add(outlinePicker,1,1);
 		
-		
+		//add items to toolbar
 		ToolBar leftBar = new ToolBar();
 		leftBar.setOrientation(Orientation.VERTICAL);
 		leftBar.getItems().addAll( title1,
@@ -206,30 +237,8 @@ public class View extends Observable {
 				grid,
 				new Separator());
 		
-		Button newBtn = new Button("New");
-		Button importBtn = new Button("Import");
-		Button exportBtn = new Button("Export");
-		Button saveBtn = new Button("Save");
+		return leftBar;
 		
-		ToolBar topBar = new ToolBar();
-		topBar.prefWidthProperty().bind(windowStage.widthProperty());
-		topBar.getItems().addAll( 
-				newBtn,
-				importBtn,
-				exportBtn,
-				saveBtn);
-		
-		initializeTabPane();
-		
-		root.setLeft(leftBar);
-		root.setTop(topBar);
-		
-		clickLocation = new Point();
-		nodeDrawer = new NodeDrawer();
-		scene = new Scene(root, 1000, 563);	// Hard coded temporarily
-		windowStage.setScene(scene);
-		windowStage.setTitle("Safety Assurance Case Editor");
-		windowStage.show();
 	}
 
 	
