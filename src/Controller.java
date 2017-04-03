@@ -33,9 +33,9 @@ public class Controller implements Observer{
 				
 		Node newNode;
 		if (type == NodeType.GOAL || type == NodeType.STRATEGY || type == NodeType.SOLUTION) {
-			newNode = new MainNode("name", "description", view.getSelectedNodeType(), clickLocation);
+			newNode = new MainNode(type.toString(), "description", view.getSelectedNodeType(), clickLocation);
 		} else {
-			newNode = new SupportingNode("name", "description", view.getSelectedNodeType(), clickLocation);
+			newNode = new SupportingNode(type.toString(), "description", view.getSelectedNodeType(), clickLocation);
 		}
 		view.drawNode(newNode);
 		view.deselectToggledNode();
