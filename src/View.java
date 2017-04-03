@@ -368,9 +368,9 @@ public class View extends Observable {
 			public void handle(MouseEvent mouseEvent) {
 				
 				double offsetX = mouseEvent.getSceneX() - clickLocation.getX();
-                double offsetY = mouseEvent.getSceneY() - clickLocation.getY();
+				double offsetY = mouseEvent.getSceneY() - clickLocation.getY();
                 
-                node.setCoordinates(new Point((int) (node.getCoordinates().getX() + offsetX), (int) (node.getCoordinates().getY() + offsetY)));
+				node.setCoordinates(new Point((int) (node.getCoordinates().getX() + offsetX), (int) (node.getCoordinates().getY() + offsetY)));
 			}
 		});
 	}
