@@ -359,7 +359,7 @@ public class View extends Observable {
                 shape.setTranslateX(newTranslateX);
                 shape.setTranslateY(newTranslateY);
                 
-                // TODO: Update model with new coordinates
+                node.setCoordinates(new Point((int)newTranslateX, (int)newTranslateY));
             }
         });
 	}

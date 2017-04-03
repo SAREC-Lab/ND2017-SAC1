@@ -11,6 +11,7 @@ public class Controller implements Observer{
 
 	View view;
 	Point clickLocation;
+	NodeManager manager = new NodeManager();
 	
 	public Controller(View v) {
 		this.view = v;
@@ -40,7 +41,7 @@ public class Controller implements Observer{
 		view.drawNode(newNode);
 		view.deselectToggledNode();
 		
-		// TODO : Add newNode to model
+		manager.addNode(newNode);
 	}
 	
 }
