@@ -326,13 +326,13 @@ public class View extends Observable {
 			break;
 		}
 		
-		Shape drawnNode = nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue());
+		Pane drawnNode = nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue());
 		addEventHandlersToNode(drawnNode, node);
 		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(drawnNode);
 	}
 	
 	// Add clicking and dragging event handlers to nodes
-	private void addEventHandlersToNode(Shape shape, Node node) {
+	private void addEventHandlersToNode(Pane shape, Node node) {
 		final Point originalTranslation = new Point();
 		
 		shape.setOnMousePressed(new EventHandler<MouseEvent>()
