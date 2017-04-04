@@ -15,7 +15,7 @@ public class EllipseStrategy implements NodeDrawingStrategy {
 	@Override
 	public Pane drawNode(Node node, Color outline, Color fill) {
 		
-		Rectangle rect = new Rectangle(node.getCoordinates().getX(), node.getCoordinates().getY(), 100, 50);
+		Rectangle rect = new Rectangle(0, 0, 100, 50);
 		
 		// Hard coded for now
 		rect.setStroke(outline);
@@ -38,6 +38,8 @@ public class EllipseStrategy implements NodeDrawingStrategy {
 		
 		StackPane stack = new StackPane();
 		stack.getChildren().addAll(rect, vBox);
+		stack.setTranslateX(node.getCoordinates().getX());
+		stack.setTranslateY(node.getCoordinates().getY());
 		
 		return stack;
 	}
