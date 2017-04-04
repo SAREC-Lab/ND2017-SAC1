@@ -15,8 +15,10 @@ public class CircleStrategy implements NodeDrawingStrategy {
 
 	@Override
 	public Pane drawNode(Node node, Color outline, Color fill) {
-		Circle circle = new Circle(node.getCoordinates().getX(), node.getCoordinates().getY(), 40);
-		
+		Circle circle = new Circle(0,0,40);
+		// Hard coded for now
+		circle.setStroke(outline);
+		circle.setFill(fill);
 		
 		Text text = new Text(node.getName());
 		text.setFont(new Font(10));
@@ -33,11 +35,10 @@ public class CircleStrategy implements NodeDrawingStrategy {
 		
 		StackPane stack = new StackPane();
 		stack.getChildren().addAll(circle, vBox);
+		stack.setTranslateX(node.getCoordinates().getX());
+		stack.setTranslateY(node.getCoordinates().getY());
 		
 		
-		// Hard coded for now
-		circle.setStroke(outline);
-		circle.setFill(fill);
 
 		return stack;	
 	}

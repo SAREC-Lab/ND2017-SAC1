@@ -43,6 +43,8 @@ public class RectangleStrategy implements NodeDrawingStrategy {
 		
 		StackPane stack = new StackPane();
 		stack.getChildren().addAll(rect, vBox);
+		stack.setTranslateX(node.getCoordinates().getX());
+		stack.setTranslateY(node.getCoordinates().getY());
 		
 		return stack;
 	}

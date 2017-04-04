@@ -40,6 +40,8 @@ public class ParallelogramStrategy implements NodeDrawingStrategy {
 		
 		StackPane stack = new StackPane();
 		stack.getChildren().addAll(p, vBox);
+		stack.setTranslateX(node.getCoordinates().getX());
+		stack.setTranslateY(node.getCoordinates().getY());
 		
 		return stack;
 	}
