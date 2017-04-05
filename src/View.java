@@ -20,6 +20,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
@@ -220,6 +222,20 @@ public class View extends Observable {
 		grid.add(outlineTitle, 0, 1);
 		grid.add(outlinePicker,1,1);
 		
+		//editable text boxers
+		final TextField title = new TextField();
+		title.setPromptText("Title");
+		title.setPrefColumnCount(10);
+		
+		final TextArea description = new TextArea();
+		description.setPromptText("Description");
+		description.setPrefColumnCount(10);
+		description.setPrefRowCount(4);
+		description.setWrapText(true);
+		
+		Button deleteBtn = new Button("Delete");
+		deleteBtn.setMaxWidth(200);
+		
 		//add items to toolbar
 		ToolBar leftBar = new ToolBar();
 		leftBar.setOrientation(Orientation.VERTICAL);
@@ -237,7 +253,10 @@ public class View extends Observable {
 				title2,
 				new Separator(),
 				grid,
-				new Separator());
+				new Separator(),
+				title,
+				description,
+				deleteBtn);
 		
 		return leftBar;
 		
@@ -362,5 +381,14 @@ public class View extends Observable {
                 // TODO: Update model with new coordinates
             }
         });
+		shape.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				
+			}
+			
+				
+		});
 	}
 }
