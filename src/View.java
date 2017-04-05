@@ -82,7 +82,7 @@ public class View {
 
 		clickLocation = new Point();
 		nodeDrawer = new NodeDrawer();
-		scene = new Scene(root, 1000, 563);	// Hard coded temporarily
+		scene = new Scene(root, 1100, 619);	// Hard coded temporarily
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
 		windowStage.show();
@@ -387,11 +387,11 @@ public class View {
 				description.setVisible(true);
 				title.setText(node.getName());
 				description.setText(node.getDescription());
-
-				title.setOnAction(new EventHandler<ActionEvent>()
+				
+				title.setOnKeyReleased(new EventHandler<KeyEvent>()
 				{
 					@Override
-					public void handle(ActionEvent event) {
+					public void handle(KeyEvent event) {
 						node.setName(title.getText());
 						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(0)).setText(title.getText());
 
