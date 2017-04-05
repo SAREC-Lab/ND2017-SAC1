@@ -341,23 +341,6 @@ public class View extends Observable {
 
 	// Set nodedrawer strategy and draw node adding it to pane
 	public void drawNode(Node node) {
-		switch (node.getNodeType()) {
-		case GOAL:
-		case CONTEXT:
-			nodeDrawer.setStrategy(new RectangleStrategy());
-			break;
-		case STRATEGY:
-			nodeDrawer.setStrategy(new ParallelogramStrategy());
-			break;
-		case SOLUTION:
-			nodeDrawer.setStrategy(new CircleStrategy());
-			break;
-		case JUSTIFICATION:
-		case ASSUMPTION:
-			nodeDrawer.setStrategy(new EllipseStrategy());
-			break;
-		}
-
 		Pane drawnNode = nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue());
 		addEventHandlersToNode(drawnNode, node);
 		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(drawnNode);
@@ -396,6 +379,7 @@ public class View extends Observable {
 					public void handle(KeyEvent event) {
 						node.setName(title.getText());
 						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(0)).setText(title.getText());
+						nodeDrawer.redraw(node);
 						
 						
 					}
@@ -406,6 +390,7 @@ public class View extends Observable {
 					public void handle(KeyEvent event) {
 						node.setDescription(description.getText());
 						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(1)).setText(description.getText());
+						nodeDrawer.redraw(node);
 						
 					}
 				});

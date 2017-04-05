@@ -7,4 +7,5 @@ import javafx.scene.shape.Shape;
 
 public interface NodeDrawingStrategy {
 	public Pane drawNode(Node node, Color outline, Color fill);
+	public Pane redraw(Node node, Color outline, Color fill);
 }

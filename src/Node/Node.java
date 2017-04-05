@@ -1,18 +1,23 @@
 package Node;
 
 import java.awt.Point;
+import javafx.scene.paint.Color;
 
 public abstract class Node {
 	private String name;
 	private String description;
 	private NodeType nodeType;
 	Point coordinates;
+	private Color outline;
+	private Color fill;
 	
 	public Node(String n, String d, NodeType nt, Point c) {
 		name = n;
 		description = d;
 		nodeType = nt;
 		coordinates = c;
+		fill = Color.WHITE;
+		outline = Color.BLACK;
 	}
 
 	public String getName() {
@@ -45,6 +50,22 @@ public abstract class Node {
 	
 	public void setCoordinates(Point c) {
 		coordinates = c;
+	}
+	
+	public void setFill(Color f) {
+		fill = f;
+	}
+	
+	public void setOutline(Color o) {
+		outline = o;
+	}
+	
+	public Color getOutline() {
+		return outline;
+	}
+	
+	public Color getFill() {
+		return fill;
 	}
 	
 	@Override
