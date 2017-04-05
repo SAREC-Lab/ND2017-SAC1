@@ -390,10 +390,10 @@ public class View extends Observable {
 				title.setText(node.getName());
 				description.setText(node.getDescription());
 				
-				title.setOnAction(new EventHandler<ActionEvent>()
+				title.setOnKeyReleased(new EventHandler<KeyEvent>()
 				{
 					@Override
-					public void handle(ActionEvent event) {
+					public void handle(KeyEvent event) {
 						node.setName(title.getText());
 						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(0)).setText(title.getText());
 						
