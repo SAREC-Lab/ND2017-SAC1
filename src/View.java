@@ -10,19 +10,24 @@ import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -38,6 +43,9 @@ import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 
 public class View extends Observable {
@@ -49,6 +57,9 @@ public class View extends Observable {
 	Point clickLocation;
 	ToggleGroup toolGroup;
 	ColorPicker outlinePicker, fillPicker;
+	Button deleteBtn;
+	TextArea description;
+	TextField title;
 
 	public View(Stage windowStage) {
 		root = new BorderPane();
@@ -219,7 +230,26 @@ public class View extends Observable {
 		grid.add(fillPicker, 1, 0);
 		grid.add(outlineTitle, 0, 1);
 		grid.add(outlinePicker,1,1);
-
+		
+		//editable text boxers
+		title = new TextField();
+		title.setPromptText("Title");
+		title.setPrefColumnCount(10);
+		
+		
+		description = new TextArea();
+		description.setPromptText("Description");
+		description.setPrefColumnCount(10);
+		description.setPrefRowCount(4);
+		description.setWrapText(true);
+		
+		deleteBtn = new Button("Delete");
+		deleteBtn.setMaxWidth(200);
+		
+		deleteBtn.setVisible(false);
+		title.setVisible(false);
+		description.setVisible(false);
+		
 		//add items to toolbar
 		ToolBar leftBar = new ToolBar();
 		leftBar.setOrientation(Orientation.VERTICAL);
@@ -237,8 +267,10 @@ public class View extends Observable {
 				title2,
 				new Separator(),
 				grid,
-				new Separator());
-
+				new Separator(),
+				title,
+				description,
+				deleteBtn);
 		return leftBar;
 
 	}
@@ -339,6 +371,7 @@ public class View extends Observable {
 		{
 			@Override
 			public void handle(MouseEvent mouseEvent) {
+				
 				shape.toFront();
 				clickLocation.x = (int) mouseEvent.getSceneX();
 				clickLocation.y = (int) mouseEvent.getSceneY();
@@ -347,6 +380,49 @@ public class View extends Observable {
 			}
 		});
 
+		shape.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				deleteBtn.setVisible(true);
+				title.setVisible(true);
+				description.setVisible(true);
+				title.setText(node.getName());
+				description.setText(node.getDescription());
+				
+				title.setOnAction(new EventHandler<ActionEvent>()
+				{
+					@Override
+					public void handle(ActionEvent event) {
+						node.setName(title.getText());
+						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(0)).setText(title.getText());
+						
+						
+					}
+				});
+				description.setOnKeyReleased(new EventHandler<KeyEvent>()
+				{
+					@Override
+					public void handle(KeyEvent event) {
+						node.setDescription(description.getText());
+						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(1)).setText(description.getText());
+						
+					}
+				});
+				deleteBtn.setOnAction(new EventHandler<ActionEvent>()
+				{
+					@Override
+					public void handle(ActionEvent event){
+						//TODO delete node from model
+						((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(shape);
+						deleteBtn.setVisible(false);
+						title.setVisible(false);
+						description.setVisible(false);
+					}
+					
+				});
+			}
+		});
 		shape.setOnMouseDragged(new EventHandler<MouseEvent>()
 		{
 			@Override

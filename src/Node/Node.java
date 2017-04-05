@@ -35,7 +35,7 @@ public abstract class Node {
 		name = n;
 	}
 	
-	public void setDescrpition(String d) {
+	public void setDescription(String d) {
 		description = d;
 	}
 	
