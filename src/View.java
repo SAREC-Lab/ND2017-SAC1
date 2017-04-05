@@ -1,11 +1,7 @@
 import java.awt.Point;
-import java.util.Observable;
 
-import Drawing.CircleStrategy;
-import Drawing.EllipseStrategy;
+
 import Drawing.NodeDrawer;
-import Drawing.ParallelogramStrategy;
-import Drawing.RectangleStrategy;
 import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
@@ -16,7 +12,6 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
@@ -31,7 +26,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -39,27 +33,25 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 
-public class View extends Observable {
+public class View {
 
-	Scene scene;
-	BorderPane root;
-	TabPane tabPane;
-	NodeDrawer nodeDrawer;
-	Point clickLocation;
-	ToggleGroup toolGroup;
-	ColorPicker outlinePicker, fillPicker;
-	Button deleteBtn;
-	TextArea description;
-	TextField title;
+	private Scene scene;
+	private BorderPane root;
+	private TabPane tabPane;
+	private NodeDrawer nodeDrawer;
+	private Point clickLocation;
+	private ToggleGroup toolGroup;
+	private ColorPicker outlinePicker, fillPicker;
+	private Button deleteBtn;
+	private TextArea description;
+	private TextField title;
+	private Controller controller;
 
 	public View(Stage windowStage) {
 		root = new BorderPane();
@@ -91,6 +83,10 @@ public class View extends Observable {
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
 		windowStage.show();
+	}
+
+	public void setController(Controller c) {
+		controller = c;
 	}
 
 	private ToolBar createToolBox() {
@@ -230,26 +226,26 @@ public class View extends Observable {
 		grid.add(fillPicker, 1, 0);
 		grid.add(outlineTitle, 0, 1);
 		grid.add(outlinePicker,1,1);
-		
+
 		//editable text boxers
 		title = new TextField();
 		title.setPromptText("Title");
 		title.setPrefColumnCount(10);
-		
-		
+
+
 		description = new TextArea();
 		description.setPromptText("Description");
 		description.setPrefColumnCount(10);
 		description.setPrefRowCount(4);
 		description.setWrapText(true);
-		
+
 		deleteBtn = new Button("Delete");
 		deleteBtn.setMaxWidth(200);
-		
+
 		deleteBtn.setVisible(false);
 		title.setVisible(false);
 		description.setVisible(false);
-		
+
 		//add items to toolbar
 		ToolBar leftBar = new ToolBar();
 		leftBar.setOrientation(Orientation.VERTICAL);
@@ -311,8 +307,7 @@ public class View extends Observable {
 			public void handle(MouseEvent mouseEvent) {
 				clickLocation.x = (int)mouseEvent.getX();
 				clickLocation.y = (int)mouseEvent.getY();
-				setChanged();
-				notifyObservers();
+				controller.createNode(getClickLocation());
 			}
 		});
 
@@ -354,7 +349,7 @@ public class View extends Observable {
 		{
 			@Override
 			public void handle(MouseEvent mouseEvent) {
-				
+
 				shape.toFront();
 				clickLocation.x = (int) mouseEvent.getSceneX();
 				clickLocation.y = (int) mouseEvent.getSceneY();
@@ -380,8 +375,6 @@ public class View extends Observable {
 						node.setName(title.getText());
 						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(0)).setText(title.getText());
 						nodeDrawer.redraw(node);
-						
-						
 					}
 				});
 				description.setOnKeyReleased(new EventHandler<KeyEvent>()
@@ -391,20 +384,19 @@ public class View extends Observable {
 						node.setDescription(description.getText());
 						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(1)).setText(description.getText());
 						nodeDrawer.redraw(node);
-						
 					}
 				});
 				deleteBtn.setOnAction(new EventHandler<ActionEvent>()
 				{
 					@Override
 					public void handle(ActionEvent event){
-						//TODO delete node from model
+						controller.removeNode(node);
 						((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(shape);
 						deleteBtn.setVisible(false);
 						title.setVisible(false);
 						description.setVisible(false);
 					}
-					
+
 				});
 			}
 		});
