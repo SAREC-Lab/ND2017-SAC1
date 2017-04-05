@@ -11,6 +11,7 @@ public class Main extends Application {
 	public void start(Stage windowStage) throws Exception {
 		View view = new View(windowStage);
 		Controller controller = new Controller(view);
+		view.setController(controller);
 	}
 
 }

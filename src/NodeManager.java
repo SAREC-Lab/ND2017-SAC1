@@ -15,7 +15,7 @@ public class NodeManager {
 		nodes.add(n);
 	}
 	
-	public void deleteNode(Node n) {
+	public void removeNode(Node n) {
 		nodes.remove(n);
 	}
 	
