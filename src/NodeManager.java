@@ -18,4 +18,8 @@ public class NodeManager {
 	public void deleteNode(Node n) {
 		nodes.remove(n);
 	}
+	
+	public void setSACRootNode(Node n) {
+		sac.setRootNode(n);
+	}
 }

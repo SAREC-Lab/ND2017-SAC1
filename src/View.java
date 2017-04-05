@@ -10,11 +10,13 @@ import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
@@ -25,6 +27,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -40,10 +43,13 @@ import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 
 public class View extends Observable {
-	
+
 	Scene scene;
 	BorderPane root;
 	TabPane tabPane;
@@ -51,18 +57,21 @@ public class View extends Observable {
 	Point clickLocation;
 	ToggleGroup toolGroup;
 	ColorPicker outlinePicker, fillPicker;
-		
+	Button deleteBtn;
+	TextArea description;
+	TextField title;
+
 	public View(Stage windowStage) {
 		root = new BorderPane();
-		
+
 		ToolBar leftBar = new ToolBar();
 		leftBar = createToolBox();
-		
+
 		Button newBtn = new Button("New");
 		Button importBtn = new Button("Import");
 		Button exportBtn = new Button("Export");
 		Button saveBtn = new Button("Save");
-		
+
 		ToolBar topBar = new ToolBar();
 		topBar.prefWidthProperty().bind(windowStage.widthProperty());
 		topBar.getItems().addAll( 
@@ -70,12 +79,12 @@ public class View extends Observable {
 				importBtn,
 				exportBtn,
 				saveBtn);
-		
+
 		initializeTabPane();
-		
+
 		root.setLeft(leftBar);
 		root.setTop(topBar);
-		
+
 		clickLocation = new Point();
 		nodeDrawer = new NodeDrawer();
 		scene = new Scene(root, 1000, 563);	// Hard coded temporarily
@@ -83,14 +92,14 @@ public class View extends Observable {
 		windowStage.setTitle("Safety Assurance Case Editor");
 		windowStage.show();
 	}
-	
+
 	private ToolBar createToolBox() {
 		Text title1 = new Text("ToolBox");
 		Text title2 = new Text("Style");
-		
+
 		// Group for tools so only one can be toggled at a time
 		toolGroup = new ToggleGroup();
-		
+
 		//Goal Button
 		ToggleButton goalBtn = new ToggleButton("Goal");
 		goalBtn.setMaxWidth(200);
@@ -100,7 +109,7 @@ public class View extends Observable {
 		goalBtn.setGraphic(r1);
 		goalBtn.setToggleGroup(toolGroup);
 		goalBtn.setUserData(NodeType.GOAL);
-		
+
 		//Context Button
 		ToggleButton contextBtn = new ToggleButton("Context");
 		contextBtn.setMaxWidth(200);
@@ -112,22 +121,22 @@ public class View extends Observable {
 		contextBtn.setGraphic(r2);
 		contextBtn.setToggleGroup(toolGroup);
 		contextBtn.setUserData(NodeType.CONTEXT);
-		
+
 		//Strategy Button
 		ToggleButton strategyBtn = new ToggleButton("Strategy");
 		strategyBtn.setMaxWidth(200);
 		Polygon parallelogram = new Polygon();
 		parallelogram.setFill(null);
-        parallelogram.getPoints().addAll(5.0, 0.0,
-                20.0, 0.0, 
-                15.0, 9.0, 
-                0.0, 9.0);
+		parallelogram.getPoints().addAll(5.0, 0.0,
+				20.0, 0.0, 
+				15.0, 9.0, 
+				0.0, 9.0);
 		parallelogram.setStrokeType(StrokeType.OUTSIDE);
 		parallelogram.setStroke(Color.BLACK);
 		strategyBtn.setGraphic(parallelogram);
 		strategyBtn.setToggleGroup(toolGroup);
 		strategyBtn.setUserData(NodeType.STRATEGY);
-		
+
 		//Solution Button
 		ToggleButton solutionBtn = new ToggleButton("Solution");
 		solutionBtn.setMaxWidth(200);
@@ -141,7 +150,7 @@ public class View extends Observable {
 		solutionBtn.setGraphic(c);
 		solutionBtn.setToggleGroup(toolGroup);
 		solutionBtn.setUserData(NodeType.SOLUTION);
-		
+
 		//Assumption Button
 		ToggleButton assumBtn = new ToggleButton("Assumption");
 		assumBtn.setMaxWidth(200);
@@ -153,7 +162,7 @@ public class View extends Observable {
 		r3.setFill(null);
 		assumBtn.setGraphic(r3);
 		assumBtn.setUserData(NodeType.ASSUMPTION);
-		
+
 		//Justification Button
 		ToggleButton justBtn = new ToggleButton("Justification");
 		justBtn.setMaxWidth(200);
@@ -165,8 +174,8 @@ public class View extends Observable {
 		r4.setFill(null);
 		justBtn.setGraphic(r4);
 		justBtn.setUserData(NodeType.JUSTIFICATION);
-		
-		
+
+
 		//Contextual Relationship Button
 		HBox hBox = new HBox();
 		Line line = new Line(0, 0,
@@ -182,8 +191,8 @@ public class View extends Observable {
 		cRelationBtn.setMaxWidth(200);
 		cRelationBtn.setToggleGroup(toolGroup);
 		cRelationBtn.setGraphic(hBox);
-		
-		
+
+
 		//Support Relationship Button
 		HBox hBox2 = new HBox();
 		Line line2 = new Line(0, 0,
@@ -202,18 +211,18 @@ public class View extends Observable {
 		sRelationBtn.setMaxWidth(200);
 		sRelationBtn.setToggleGroup(toolGroup);
 		sRelationBtn.setGraphic(hBox2);
-		
+
 		//Fill Button
 		Text fillTitle = new Text("Fill");
 		fillPicker = new ColorPicker();
 		fillPicker.setValue(Color.WHITE);
-		
+
 		//Outline Button
 		Text outlineTitle = new Text("Outline");
 		outlinePicker = new ColorPicker();
 		outlinePicker.setValue(Color.BLACK);		
-		
-		
+
+
 		GridPane grid = new GridPane();
 		grid.setVgap(10);
 		grid.setHgap(3);
@@ -223,18 +232,23 @@ public class View extends Observable {
 		grid.add(outlinePicker,1,1);
 		
 		//editable text boxers
-		final TextField title = new TextField();
+		title = new TextField();
 		title.setPromptText("Title");
 		title.setPrefColumnCount(10);
 		
-		final TextArea description = new TextArea();
+		
+		description = new TextArea();
 		description.setPromptText("Description");
 		description.setPrefColumnCount(10);
 		description.setPrefRowCount(4);
 		description.setWrapText(true);
 		
-		Button deleteBtn = new Button("Delete");
+		deleteBtn = new Button("Delete");
 		deleteBtn.setMaxWidth(200);
+		
+		deleteBtn.setVisible(false);
+		title.setVisible(false);
+		description.setVisible(false);
 		
 		//add items to toolbar
 		ToolBar leftBar = new ToolBar();
@@ -257,61 +271,60 @@ public class View extends Observable {
 				title,
 				description,
 				deleteBtn);
-		
 		return leftBar;
-		
+
 	}
 
-	
+
 	private void initializeTabPane() {
-		 tabPane = new TabPane();
-		 final Tab addTab = new Tab("+");
-		 addTab.setClosable(false);
-		 tabPane.getTabs().add(addTab);
-		 createNewTab(tabPane);
-		 
-		 // Add listener so that when "+" tab clicked, new tab is created
-		 tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
-		      @Override
-		      public void changed(ObservableValue<? extends Tab> observable,
-		          Tab oldTab, Tab newTab) {
-		        if (newTab == addTab) {
-		          createNewTab(tabPane);
-		        }
-		      }
-		    });
-		 
-		 root.setCenter(tabPane);
+		tabPane = new TabPane();
+		final Tab addTab = new Tab("+");
+		addTab.setClosable(false);
+		tabPane.getTabs().add(addTab);
+		createNewTab(tabPane);
+
+		// Add listener so that when "+" tab clicked, new tab is created
+		tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+			@Override
+			public void changed(ObservableValue<? extends Tab> observable,
+					Tab oldTab, Tab newTab) {
+				if (newTab == addTab) {
+					createNewTab(tabPane);
+				}
+			}
+		});
+
+		root.setCenter(tabPane);
 	}
-	
+
 	private void createNewTab(TabPane tabPane) {
 		Tab newTab = new Tab("unnamed.sac");
 		ScrollPane scrollPane = new ScrollPane();
 		Pane workPane = new Pane();
 		workPane.setMinSize(1500, 1500);	// TODO: Make pane expand as dragging of nodes occurs
 		scrollPane.setContent(workPane);
-		
+
 		// Handle clicks directly to pane by delegating to observing controller
 		workPane.setOnMouseClicked(new EventHandler<MouseEvent>()
-        {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                clickLocation.x = (int)mouseEvent.getX();
-                clickLocation.y = (int)mouseEvent.getY();
-                setChanged();
-                notifyObservers();
-            }
-        });
-		
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				clickLocation.x = (int)mouseEvent.getX();
+				clickLocation.y = (int)mouseEvent.getY();
+				setChanged();
+				notifyObservers();
+			}
+		});
+
 		newTab.setContent(scrollPane);	// Scroll pane within each tab
-	    tabPane.getTabs().add(tabPane.getTabs().size() - 1, newTab);
-	    tabPane.getSelectionModel().select(newTab);
+		tabPane.getTabs().add(tabPane.getTabs().size() - 1, newTab);
+		tabPane.getSelectionModel().select(newTab);
 	}
 
 	public Point getClickLocation() {
 		return clickLocation;
 	}
-	
+
 	// Return which node type is selected
 	public NodeType getSelectedNodeType() {
 		if (toolGroup.getSelectedToggle() == null) {
@@ -320,12 +333,12 @@ public class View extends Observable {
 			return (NodeType)toolGroup.getSelectedToggle().getUserData();
 		}
 	}
-	
+
 	// Deselect toggled node
 	public void deselectToggledNode() {
 		toolGroup.getSelectedToggle().setSelected(false);
 	}
-	
+
 	// Set nodedrawer strategy and draw node adding it to pane
 	public void drawNode(Node node) {
 		switch (node.getNodeType()) {
@@ -344,51 +357,97 @@ public class View extends Observable {
 			nodeDrawer.setStrategy(new EllipseStrategy());
 			break;
 		}
-		
-		Shape drawnNode = nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue());
+
+		Pane drawnNode = nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue());
 		addEventHandlersToNode(drawnNode, node);
 		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(drawnNode);
 	}
-	
+
 	// Add clicking and dragging event handlers to nodes
-	private void addEventHandlersToNode(Shape shape, Node node) {
+	private void addEventHandlersToNode(Pane shape, Node node) {
 		final Point originalTranslation = new Point();
-		
+
 		shape.setOnMousePressed(new EventHandler<MouseEvent>()
-        {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-            	shape.toFront();
-            	clickLocation.x = (int) mouseEvent.getSceneX();
-            	clickLocation.y = (int) mouseEvent.getSceneY();
-            	originalTranslation.x = (int) shape.getTranslateX();
-            	originalTranslation.y = (int) shape.getTranslateY();
-            }
-        });
-		
-		shape.setOnMouseDragged(new EventHandler<MouseEvent>()
-        {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-            	double offsetX = mouseEvent.getSceneX() - clickLocation.getX();
-                double offsetY = mouseEvent.getSceneY() - clickLocation.getY();
-                double newTranslateX = originalTranslation.getX() + offsetX;
-                double newTranslateY = originalTranslation.getY() + offsetY;
-                 
-                shape.setTranslateX(newTranslateX);
-                shape.setTranslateY(newTranslateY);
-                
-                // TODO: Update model with new coordinates
-            }
-        });
-		shape.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
 			@Override
 			public void handle(MouseEvent mouseEvent) {
 				
+				shape.toFront();
+				clickLocation.x = (int) mouseEvent.getSceneX();
+				clickLocation.y = (int) mouseEvent.getSceneY();
+				originalTranslation.x = (int) shape.getTranslateX();
+				originalTranslation.y = (int) shape.getTranslateY();
 			}
-			
+		});
+
+		shape.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				deleteBtn.setVisible(true);
+				title.setVisible(true);
+				description.setVisible(true);
+				title.setText(node.getName());
+				description.setText(node.getDescription());
 				
+				title.setOnAction(new EventHandler<ActionEvent>()
+				{
+					@Override
+					public void handle(ActionEvent event) {
+						node.setName(title.getText());
+						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(0)).setText(title.getText());
+						
+						
+					}
+				});
+				description.setOnKeyReleased(new EventHandler<KeyEvent>()
+				{
+					@Override
+					public void handle(KeyEvent event) {
+						node.setDescription(description.getText());
+						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(1)).setText(description.getText());
+						
+					}
+				});
+				deleteBtn.setOnAction(new EventHandler<ActionEvent>()
+				{
+					@Override
+					public void handle(ActionEvent event){
+						//TODO delete node from model
+						((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(shape);
+						deleteBtn.setVisible(false);
+						title.setVisible(false);
+						description.setVisible(false);
+					}
+					
+				});
+			}
+		});
+		shape.setOnMouseDragged(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+
+				double offsetX = mouseEvent.getSceneX() - clickLocation.getX();
+				double offsetY = mouseEvent.getSceneY() - clickLocation.getY();
+				double newTranslateX = originalTranslation.getX() + offsetX;
+				double newTranslateY = originalTranslation.getY() + offsetY;
+
+				shape.setTranslateX(newTranslateX);
+				shape.setTranslateY(newTranslateY);
+			}
+		});
+
+		shape.setOnMouseReleased(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+
+				double offsetX = mouseEvent.getSceneX() - clickLocation.getX();
+				double offsetY = mouseEvent.getSceneY() - clickLocation.getY();
+
+				node.setCoordinates(new Point((int) (node.getCoordinates().getX() + offsetX), (int) (node.getCoordinates().getY() + offsetY)));
+			}
 		});
 	}
 }
