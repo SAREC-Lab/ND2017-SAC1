@@ -87,7 +87,7 @@ public class View extends Observable {
 
 		clickLocation = new Point();
 		nodeDrawer = new NodeDrawer();
-		scene = new Scene(root, 1000, 563);	// Hard coded temporarily
+		scene = new Scene(root, 1100, 619);	// Hard coded temporarily
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
 		windowStage.show();
