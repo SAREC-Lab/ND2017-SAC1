@@ -1,6 +1,6 @@
 import java.awt.Point;
 
-
+import Drawing.ConnectionDrawer;
 import Drawing.NodeDrawer;
 import Node.Node;
 import Node.NodeType;
@@ -45,6 +45,7 @@ public class View {
 	private BorderPane root;
 	private TabPane tabPane;
 	private NodeDrawer nodeDrawer;
+	private ConnectionDrawer connectionDrawer;
 	private Point clickLocation;
 	private ToggleGroup toolGroup;
 	private ColorPicker outlinePicker, fillPicker;
@@ -52,7 +53,10 @@ public class View {
 	private TextArea description;
 	private TextField title;
 	private Controller controller;
-
+	private boolean makingConnection;
+	private Node selectedNode;
+	private Pane selectedPane;
+	
 	public View(Stage windowStage) {
 		root = new BorderPane();
 
@@ -79,6 +83,8 @@ public class View {
 
 		clickLocation = new Point();
 		nodeDrawer = new NodeDrawer();
+		connectionDrawer = new ConnectionDrawer();
+		makingConnection = false;
 		scene = new Scene(root, 1100, 619);	// Hard coded temporarily
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
@@ -187,6 +193,15 @@ public class View {
 		cRelationBtn.setMaxWidth(200);
 		cRelationBtn.setToggleGroup(toolGroup);
 		cRelationBtn.setGraphic(hBox);
+		cRelationBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				makingConnection = cRelationBtn.isSelected();
+				selectedNode = null;
+				selectedPane = null;
+			}
+		});
 
 
 		//Support Relationship Button
@@ -207,6 +222,16 @@ public class View {
 		sRelationBtn.setMaxWidth(200);
 		sRelationBtn.setToggleGroup(toolGroup);
 		sRelationBtn.setGraphic(hBox2);
+		sRelationBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				makingConnection = sRelationBtn.isSelected();
+				selectedNode = null;
+				selectedPane = null;
+			}
+		});
+		
 
 		//Fill Button
 		Text fillTitle = new Text("Fill");
@@ -336,14 +361,15 @@ public class View {
 
 	// Set nodedrawer strategy and draw node adding it to pane
 	public void drawNode(Node node) {
-		Pane drawnNode = nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue());
-		addEventHandlersToNode(drawnNode, node);
-		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(drawnNode);
+		node.setPane(nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue()));
+		addEventHandlersToNode(node);
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(node.getPane());
 	}
 
 	// Add clicking and dragging event handlers to nodes
-	private void addEventHandlersToNode(Pane shape, Node node) {
+	private void addEventHandlersToNode(Node node) {
 		final Point originalTranslation = new Point();
+		Pane shape = node.getPane();
 
 		shape.setOnMousePressed(new EventHandler<MouseEvent>()
 		{
@@ -362,6 +388,19 @@ public class View {
 		{
 			@Override
 			public void handle(MouseEvent mouseEvent) {
+				
+				// Handle making connection if in progress
+				if (makingConnection && selectedNode != null) {
+					Line connection = connectionDrawer.drawConnection(selectedNode, node);
+					((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
+					selectedNode = null;
+					selectedPane = null;
+					makingConnection = false;
+					deselectToggledNode();
+				}
+				
+				selectedNode = node;
+				selectedPane = shape;
 				deleteBtn.setVisible(true);
 				title.setVisible(true);
 				description.setVisible(true);

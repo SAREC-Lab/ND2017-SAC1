@@ -1,6 +1,8 @@
 package Node;
 
 import java.awt.Point;
+
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 public abstract class Node {
@@ -10,6 +12,7 @@ public abstract class Node {
 	Point coordinates;
 	private Color outline;
 	private Color fill;
+	private Pane pane;
 	
 	public Node(String n, String d, NodeType nt, Point c) {
 		name = n;
@@ -66,6 +69,14 @@ public abstract class Node {
 	
 	public Color getFill() {
 		return fill;
+	}
+	
+	public void setPane(Pane p) {
+		pane = p;
+	}
+	
+	public Pane getPane() {
+		return pane;
 	}
 	
 	@Override
