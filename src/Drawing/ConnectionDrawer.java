@@ -1,6 +1,7 @@
 package Drawing;
 
 import Node.Node;
+import Node.NodeType;
 import javafx.scene.shape.Line;
 
 public class ConnectionDrawer {
@@ -17,12 +18,24 @@ public class ConnectionDrawer {
 				startY = start.getCoordinates().getY() + start.getPane().getHeight()/2;
 				endX = end.getCoordinates().getX();
 				endY = end.getCoordinates().getY() + end.getPane().getHeight()/2;
+				
+				if (start.getNodeType() == NodeType.STRATEGY)	// Handles offset for parallelogram
+					startX -= 11;
+				if (end.getNodeType() == NodeType.STRATEGY)
+					endX += 11;
+				
 			// Start is on right of end
 			} else {
 				startX = start.getCoordinates().getX();
 				startY = start.getCoordinates().getY() + start.getPane().getHeight()/2;
 				endX = end.getCoordinates().getX() + end.getPane().getWidth();
-				endY = end.getCoordinates().getY() + end.getPane().getHeight()/2;			}
+				endY = end.getCoordinates().getY() + end.getPane().getHeight()/2;	
+				
+				if (start.getNodeType() == NodeType.STRATEGY)	// Handles offset for parallelogram
+					startX += 11;
+				if (end.getNodeType() == NodeType.STRATEGY)
+					endX -= 11;
+			}
 		} else {
 			// Start is above end
 			if (yDiff < 0) {

@@ -55,7 +55,6 @@ public class View {
 	private Controller controller;
 	private boolean makingConnection;
 	private Node selectedNode;
-	private Pane selectedPane;
 	
 	public View(Stage windowStage) {
 		root = new BorderPane();
@@ -199,7 +198,6 @@ public class View {
 			public void handle(ActionEvent event){
 				makingConnection = cRelationBtn.isSelected();
 				selectedNode = null;
-				selectedPane = null;
 			}
 		});
 
@@ -228,7 +226,6 @@ public class View {
 			public void handle(ActionEvent event){
 				makingConnection = sRelationBtn.isSelected();
 				selectedNode = null;
-				selectedPane = null;
 			}
 		});
 		
@@ -394,13 +391,11 @@ public class View {
 					Line connection = connectionDrawer.drawConnection(selectedNode, node);
 					((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
 					selectedNode = null;
-					selectedPane = null;
 					makingConnection = false;
 					deselectToggledNode();
 				}
 				
 				selectedNode = node;
-				selectedPane = shape;
 				deleteBtn.setVisible(true);
 				title.setVisible(true);
 				description.setVisible(true);
