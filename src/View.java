@@ -374,6 +374,18 @@ public class View {
             }
         });
 	}
+	
+	// Draw connection between two nodes (called in event handlers)
+	private void drawConnection(Node start, Node end) {
+		Line connection = connectionDrawer.drawConnection(start, end);
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
+		
+		start.getPane().updateNodeProperties();
+		end.getPane().updateNodeProperties();
+		selectedNode = null;
+		makingConnection = false;
+		deselectToggledNode();
+	}
 
 	// Add clicking and dragging event handlers to nodes
 	private void addEventHandlersToNode(Node node) {
@@ -400,13 +412,7 @@ public class View {
 				
 				// Handle making connection if in progress
 				if (makingConnection && selectedNode != null) {
-					Line connection = connectionDrawer.drawConnection(selectedNode, node);
-					((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
-					node.getPane().updateNodeProperties();
-					selectedNode.getPane().updateNodeProperties();
-					selectedNode = null;
-					makingConnection = false;
-					deselectToggledNode();
+					drawConnection(selectedNode, node);
 				}
 				
 				selectedNode = node;

@@ -1,6 +1,7 @@
 package Drawing;
 
 import Node.Node;
+import Node.NodeType;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -37,6 +38,12 @@ public class NodePane extends StackPane {
 		leftConnectorY.set(node.getCoordinates().getY() + node.getPane().getHeight()/2);
 		rightConnectorX.set(node.getCoordinates().getX() + node.getPane().getWidth());
 		rightConnectorY.set(node.getCoordinates().getY() + node.getPane().getHeight()/2);
+		
+		// Handle slanted sides of parallelograms
+		if (node.getNodeType() == NodeType.STRATEGY) {
+			rightConnectorX.set(node.getCoordinates().getX() + node.getPane().getWidth() - 11);
+			leftConnectorX.set(node.getCoordinates().getX() + 11);
+		}
 	}
 	
 	public ReadOnlyDoubleProperty getTopConnectorPropertyX() {
