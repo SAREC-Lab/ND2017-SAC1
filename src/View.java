@@ -380,6 +380,7 @@ public class View {
 		Line connection = connectionDrawer.drawConnection(start, end);
 		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
 		
+		// TODO: Add connection to model
 		start.getPane().updateNodeProperties();
 		end.getPane().updateNodeProperties();
 		selectedNode = null;
