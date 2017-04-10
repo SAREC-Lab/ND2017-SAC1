@@ -3,19 +3,16 @@ package Drawing;
 import Node.Node;
 import Node.NodeType;
 import javafx.geometry.Pos;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class RectangleStrategy implements NodeDrawingStrategy {
 
 	@Override
-	public Pane drawNode(Node node, Color outline, Color fill) {
+	public NodePane drawNode(Node node, Color outline, Color fill) {
 
 		Rectangle rect = new Rectangle(node.getCoordinates().getX(), node.getCoordinates().getY(), 100, 50);
 		
@@ -41,7 +38,7 @@ public class RectangleStrategy implements NodeDrawingStrategy {
 		vBox.getChildren().addAll(text, description);
 		vBox.setAlignment(Pos.CENTER);
 		
-		StackPane stack = new StackPane();
+		NodePane stack = new NodePane(node);
 		stack.getChildren().addAll(rect, vBox);
 		stack.setTranslateX(node.getCoordinates().getX());
 		stack.setTranslateY(node.getCoordinates().getY());
@@ -50,7 +47,7 @@ public class RectangleStrategy implements NodeDrawingStrategy {
 	}
 
 	@Override
-	public Pane redraw(Node node, Color outline, Color fill) {
+	public NodePane redraw(Node node, Color outline, Color fill) {
 		// TODO Auto-generated method stub
 		return null;
 	}

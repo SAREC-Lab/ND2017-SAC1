@@ -1,7 +1,6 @@
 package Drawing;
 
 import Node.Node;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import Node.NodeType;
 
@@ -9,7 +8,7 @@ public class NodeDrawer {
 	NodeDrawingStrategy strategy;
 	
 	// Generates javafx shape to return to view
-	public Pane drawNode(Node node, Color outline, Color fill) {
+	public NodePane drawNode(Node node, Color outline, Color fill) {
 		node.setFill(fill);
 		node.setOutline(outline);
 		setStrategy(node.getNodeType());
@@ -34,7 +33,7 @@ public class NodeDrawer {
 			break;
 		}
 	}
-	public Pane redraw(Node node){
+	public NodePane redraw(Node node){
 		Color fill = node.getFill();
 		Color outline = node.getOutline();
 		setStrategy(node.getNodeType());

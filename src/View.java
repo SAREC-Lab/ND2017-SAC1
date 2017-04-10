@@ -1,13 +1,15 @@
 import java.awt.Point;
 
-
+import Drawing.ConnectionDrawer;
 import Drawing.NodeDrawer;
+import Drawing.NodePane;
 import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -35,6 +37,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 
@@ -45,6 +48,7 @@ public class View {
 	private BorderPane root;
 	private TabPane tabPane;
 	private NodeDrawer nodeDrawer;
+	private ConnectionDrawer connectionDrawer;
 	private Point clickLocation;
 	private ToggleGroup toolGroup;
 	private ColorPicker outlinePicker, fillPicker;
@@ -52,7 +56,9 @@ public class View {
 	private TextArea description;
 	private TextField title;
 	private Controller controller;
-
+	private boolean makingConnection;
+	private Node selectedNode;
+	
 	public View(Stage windowStage) {
 		root = new BorderPane();
 
@@ -79,6 +85,8 @@ public class View {
 
 		clickLocation = new Point();
 		nodeDrawer = new NodeDrawer();
+		connectionDrawer = new ConnectionDrawer();
+		makingConnection = false;
 		scene = new Scene(root, 1100, 619);	// Hard coded temporarily
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
@@ -187,6 +195,14 @@ public class View {
 		cRelationBtn.setMaxWidth(200);
 		cRelationBtn.setToggleGroup(toolGroup);
 		cRelationBtn.setGraphic(hBox);
+		cRelationBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				makingConnection = cRelationBtn.isSelected();
+				selectedNode = null;
+			}
+		});
 
 
 		//Support Relationship Button
@@ -207,6 +223,15 @@ public class View {
 		sRelationBtn.setMaxWidth(200);
 		sRelationBtn.setToggleGroup(toolGroup);
 		sRelationBtn.setGraphic(hBox2);
+		sRelationBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				makingConnection = sRelationBtn.isSelected();
+				selectedNode = null;
+			}
+		});
+		
 
 		//Fill Button
 		Text fillTitle = new Text("Fill");
@@ -336,14 +361,37 @@ public class View {
 
 	// Set nodedrawer strategy and draw node adding it to pane
 	public void drawNode(Node node) {
-		Pane drawnNode = nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue());
-		addEventHandlersToNode(drawnNode, node);
-		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(drawnNode);
+		node.setPane(nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue()));
+		addEventHandlersToNode(node);
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(node.getPane());
+		node.getPane().updateNodeProperties();
+		
+		// If the node ever moves, update connection properties to match
+		node.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
+            @Override 
+            public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+                node.getPane().updateNodeProperties();
+            }
+        });
+	}
+	
+	// Draw connection between two nodes (called in event handlers)
+	private void drawConnection(Node start, Node end) {
+		Line connection = connectionDrawer.drawConnection(start, end);
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
+		
+		// TODO: Add connection to model
+		start.getPane().updateNodeProperties();
+		end.getPane().updateNodeProperties();
+		selectedNode = null;
+		makingConnection = false;
+		deselectToggledNode();
 	}
 
 	// Add clicking and dragging event handlers to nodes
-	private void addEventHandlersToNode(Pane shape, Node node) {
+	private void addEventHandlersToNode(Node node) {
 		final Point originalTranslation = new Point();
+		NodePane shape = node.getPane();
 
 		shape.setOnMousePressed(new EventHandler<MouseEvent>()
 		{
@@ -362,6 +410,13 @@ public class View {
 		{
 			@Override
 			public void handle(MouseEvent mouseEvent) {
+				
+				// Handle making connection if in progress
+				if (makingConnection && selectedNode != null) {
+					drawConnection(selectedNode, node);
+				}
+				
+				selectedNode = node;
 				deleteBtn.setVisible(true);
 				title.setVisible(true);
 				description.setVisible(true);
@@ -400,6 +455,7 @@ public class View {
 				});
 			}
 		});
+		
 		shape.setOnMouseDragged(new EventHandler<MouseEvent>()
 		{
 			@Override
@@ -412,18 +468,11 @@ public class View {
 
 				shape.setTranslateX(newTranslateX);
 				shape.setTranslateY(newTranslateY);
-			}
-		});
-
-		shape.setOnMouseReleased(new EventHandler<MouseEvent>()
-		{
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-
-				double offsetX = mouseEvent.getSceneX() - clickLocation.getX();
-				double offsetY = mouseEvent.getSceneY() - clickLocation.getY();
-
-				node.setCoordinates(new Point((int) (node.getCoordinates().getX() + offsetX), (int) (node.getCoordinates().getY() + offsetY)));
+			
+				// Set new coordinates
+				Bounds bounds = shape.getBoundsInLocal();
+		        Bounds screenBounds = shape.localToParent(bounds);
+				node.getCoordinates().setLocation((int) screenBounds.getMinX(), (int) screenBounds.getMinY());
 			}
 		});
 	}

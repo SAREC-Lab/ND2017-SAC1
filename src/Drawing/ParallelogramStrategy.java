@@ -2,8 +2,6 @@ package Drawing;
 
 import Node.Node;
 import javafx.geometry.Pos;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -14,7 +12,7 @@ import javafx.scene.text.Text;
 public class ParallelogramStrategy implements NodeDrawingStrategy {
 
 	@Override
-	public Pane drawNode(Node node, Color outline, Color fill) {
+	public NodePane drawNode(Node node, Color outline, Color fill) {
 		
 		double x = node.getCoordinates().getX();
 		double y = node.getCoordinates().getY();
@@ -37,7 +35,7 @@ public class ParallelogramStrategy implements NodeDrawingStrategy {
 		vBox.getChildren().addAll(text, description);
 		vBox.setAlignment(Pos.CENTER);
 		
-		StackPane stack = new StackPane();
+		NodePane stack = new NodePane(node);
 		stack.getChildren().addAll(p, vBox);
 		stack.setTranslateX(node.getCoordinates().getX());
 		stack.setTranslateY(node.getCoordinates().getY());
@@ -46,7 +44,7 @@ public class ParallelogramStrategy implements NodeDrawingStrategy {
 	}
 
 	@Override
-	public Pane redraw(Node node, Color outline, Color fill) {
+	public NodePane redraw(Node node, Color outline, Color fill) {
 		// TODO Auto-generated method stub
 		return null;
 	}
