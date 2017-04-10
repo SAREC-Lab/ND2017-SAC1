@@ -2,7 +2,7 @@ package Node;
 
 import java.awt.Point;
 
-import javafx.scene.layout.Pane;
+import Drawing.NodePane;
 import javafx.scene.paint.Color;
 
 public abstract class Node {
@@ -12,7 +12,7 @@ public abstract class Node {
 	Point coordinates;
 	private Color outline;
 	private Color fill;
-	private Pane pane;
+	private NodePane pane;
 	
 	public Node(String n, String d, NodeType nt, Point c) {
 		name = n;
@@ -52,7 +52,7 @@ public abstract class Node {
 	}
 	
 	public void setCoordinates(Point c) {
-		coordinates = c;
+		coordinates.setLocation(c.getX(), c.getY());
 	}
 	
 	public void setFill(Color f) {
@@ -71,11 +71,11 @@ public abstract class Node {
 		return fill;
 	}
 	
-	public void setPane(Pane p) {
+	public void setPane(NodePane p) {
 		pane = p;
 	}
 	
-	public Pane getPane() {
+	public NodePane getPane() {
 		return pane;
 	}
 	

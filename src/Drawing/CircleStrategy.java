@@ -3,8 +3,6 @@ package Drawing;
 import Node.Node;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
@@ -13,7 +11,7 @@ import javafx.scene.text.Text;
 public class CircleStrategy implements NodeDrawingStrategy {
 
 	@Override
-	public Pane drawNode(Node node, Color outline, Color fill) {
+	public NodePane drawNode(Node node, Color outline, Color fill) {
 		Circle circle = new Circle(0,0,40);
 		// Hard coded for now
 		circle.setStroke(outline);
@@ -32,18 +30,16 @@ public class CircleStrategy implements NodeDrawingStrategy {
 		vBox.getChildren().addAll(text, description);
 		vBox.setAlignment(Pos.CENTER);
 		
-		StackPane stack = new StackPane();
+		NodePane stack = new NodePane(node);
 		stack.getChildren().addAll(circle, vBox);
 		stack.setTranslateX(node.getCoordinates().getX());
 		stack.setTranslateY(node.getCoordinates().getY());
-		
-		
 
 		return stack;	
 	}
 
 	@Override
-	public Pane redraw(Node node, Color outline, Color fill) {
+	public NodePane redraw(Node node, Color outline, Color fill) {
 		// TODO Auto-generated method stub
 		return null;
 	}

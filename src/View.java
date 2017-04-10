@@ -2,12 +2,14 @@ import java.awt.Point;
 
 import Drawing.ConnectionDrawer;
 import Drawing.NodeDrawer;
+import Drawing.NodePane;
 import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -35,6 +37,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 
@@ -361,12 +364,21 @@ public class View {
 		node.setPane(nodeDrawer.drawNode(node, outlinePicker.getValue(), fillPicker.getValue()));
 		addEventHandlersToNode(node);
 		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(node.getPane());
+		node.getPane().updateNodeProperties();
+		
+		// If the node ever moves, update connection properties to match
+		node.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
+            @Override 
+            public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+                node.getPane().updateNodeProperties();
+            }
+        });
 	}
 
 	// Add clicking and dragging event handlers to nodes
 	private void addEventHandlersToNode(Node node) {
 		final Point originalTranslation = new Point();
-		Pane shape = node.getPane();
+		NodePane shape = node.getPane();
 
 		shape.setOnMousePressed(new EventHandler<MouseEvent>()
 		{
@@ -390,6 +402,8 @@ public class View {
 				if (makingConnection && selectedNode != null) {
 					Line connection = connectionDrawer.drawConnection(selectedNode, node);
 					((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
+					node.getPane().updateNodeProperties();
+					selectedNode.getPane().updateNodeProperties();
 					selectedNode = null;
 					makingConnection = false;
 					deselectToggledNode();
@@ -434,6 +448,7 @@ public class View {
 				});
 			}
 		});
+		
 		shape.setOnMouseDragged(new EventHandler<MouseEvent>()
 		{
 			@Override
@@ -446,18 +461,11 @@ public class View {
 
 				shape.setTranslateX(newTranslateX);
 				shape.setTranslateY(newTranslateY);
-			}
-		});
-
-		shape.setOnMouseReleased(new EventHandler<MouseEvent>()
-		{
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-
-				double offsetX = mouseEvent.getSceneX() - clickLocation.getX();
-				double offsetY = mouseEvent.getSceneY() - clickLocation.getY();
-
-				node.setCoordinates(new Point((int) (node.getCoordinates().getX() + offsetX), (int) (node.getCoordinates().getY() + offsetY)));
+			
+				// Set new coordinates
+				Bounds bounds = shape.getBoundsInLocal();
+		        Bounds screenBounds = shape.localToParent(bounds);
+				node.getCoordinates().setLocation((int) screenBounds.getMinX(), (int) screenBounds.getMinY());
 			}
 		});
 	}
