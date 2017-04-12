@@ -37,4 +37,27 @@ public class Controller{
 	public void removeNode(Node n) {
 		manager.removeNode(n);
 	}
+
+	public boolean connectNodes(Node start, Node end) {
+		if (!validateConnection(start, end)) {
+			return false;
+		} else {
+			MainNode main_node = (MainNode) start;
+			main_node.addChild(end);
+			return true;
+		}
+	}
+
+	private boolean validateConnection(Node start, Node end) {
+		//TODO: more complicated validation
+		if (start.getClass() != MainNode.class) {
+			return false;
+		}
+
+		if (start.equals(end)) {
+			return false;
+		}
+
+		return true;
+	}
 }
