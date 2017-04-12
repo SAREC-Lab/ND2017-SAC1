@@ -53,6 +53,7 @@ public class View {
 	private ToggleGroup toolGroup;
 	private ColorPicker outlinePicker, fillPicker;
 	private Button deleteBtn;
+	private Button addRootBtn;
 	private TextArea description;
 	private TextField title;
 	private Controller controller;
@@ -266,10 +267,14 @@ public class View {
 
 		deleteBtn = new Button("Delete");
 		deleteBtn.setMaxWidth(200);
+		
+		addRootBtn = new Button("Add Root");
+		addRootBtn.setMaxWidth(200);
 
 		deleteBtn.setVisible(false);
 		title.setVisible(false);
 		description.setVisible(false);
+		addRootBtn.setVisible(false);
 
 		//add items to toolbar
 		ToolBar leftBar = new ToolBar();
@@ -291,7 +296,8 @@ public class View {
 				new Separator(),
 				title,
 				description,
-				deleteBtn);
+				deleteBtn,
+				addRootBtn);
 		return leftBar;
 
 	}
@@ -417,6 +423,7 @@ public class View {
 				}
 				
 				selectedNode = node;
+				addRootBtn.setVisible(false);
 				deleteBtn.setVisible(true);
 				title.setVisible(true);
 				description.setVisible(true);
@@ -453,6 +460,16 @@ public class View {
 					}
 
 				});
+				if(node.getNodeType() == NodeType.GOAL){
+					addRootBtn.setVisible(true);
+					addRootBtn.setOnAction(new EventHandler <ActionEvent>()
+					{
+						@Override
+						public void handle(ActionEvent event){
+							controller.addRoot(node);
+						}
+					});
+				}
 			}
 		});
 		

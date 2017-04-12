@@ -33,6 +33,10 @@ public class Controller{
 
 		manager.addNode(newNode);
 	}
+	
+	public void addRoot(Node n) {
+		manager.setSACRootNode(n);
+	}
 
 	public void removeNode(Node n) {
 		manager.removeNode(n);
