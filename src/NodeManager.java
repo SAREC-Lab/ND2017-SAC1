@@ -8,6 +8,7 @@ public class NodeManager {
 	private SAC sac = new SAC();
 	private ArrayList<Node> nodes = new ArrayList<Node>();
 	
+	
 	public NodeManager() {
 	}
 	

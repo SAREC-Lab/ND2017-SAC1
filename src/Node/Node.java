@@ -13,8 +13,10 @@ public abstract class Node {
 	private Color outline;
 	private Color fill;
 	private NodePane pane;
+	private final int identifier;   
 	
-	public Node(String n, String d, NodeType nt, Point c) {
+	public Node(String n, String d, NodeType nt, Point c, int id) {
+		identifier = id;
 		name = n;
 		description = d;
 		nodeType = nt;
@@ -25,6 +27,10 @@ public abstract class Node {
 
 	public String getName() {
 		return name;
+	}
+	
+	public final int getID() {
+		return identifier;
 	}
 	
 	public String getDescription() {
