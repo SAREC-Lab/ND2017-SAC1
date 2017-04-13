@@ -44,4 +44,8 @@ public class Controller{
 	public void removeNode(Node n) {
 		manager.removeNode(n);
 	}
+
+	public void traverse(boolean b) {
+		manager.traverse(b);
+	}
 }

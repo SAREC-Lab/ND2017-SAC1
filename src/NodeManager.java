@@ -23,4 +23,10 @@ public class NodeManager {
 	public void setSACRootNode(Node n) {
 		sac.setRootNode(n);
 	}
+
+	public void traverse(boolean b) {
+		for (Node n: nodes) {
+			System.out.println(n.getID());
+		}
+	}
 }

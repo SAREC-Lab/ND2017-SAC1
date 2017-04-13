@@ -70,6 +70,23 @@ public class View {
 		Button importBtn = new Button("Import");
 		Button exportBtn = new Button("Export");
 		Button saveBtn = new Button("Save");
+		
+		exportBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				controller.traverse(false);
+			}
+
+		});
+		saveBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				controller.traverse(true);
+			}
+
+		});
 
 		ToolBar topBar = new ToolBar();
 		topBar.prefWidthProperty().bind(windowStage.widthProperty());
