@@ -1,9 +1,12 @@
 import java.awt.Point;
+import java.util.ArrayList;
 
+import Node.Connection;
 import Node.MainNode;
 import Node.Node;
 import Node.NodeType;
 import Node.SupportingNode;
+import javafx.scene.shape.Line;
 
 public class Controller{
 
@@ -38,12 +41,14 @@ public class Controller{
 		manager.removeNode(n);
 	}
 
-	public boolean connectNodes(Node start, Node end) {
+	public boolean connectNodes(Node start, Node end, Line connection) {
 		if (!validateConnection(start, end)) {
 			return false;
 		} else {
 			MainNode main_node = (MainNode) start;
 			main_node.addChild(end);
+			end.addParent(main_node);
+			manager.addConnection(new Connection(start, end, connection));
 			return true;
 		}
 	}
@@ -59,5 +64,15 @@ public class Controller{
 		}
 
 		return true;
+	}
+
+	public ArrayList<Line> getConnectionLines(Node node) {
+		ArrayList<Line> lines = new ArrayList<Line>();
+		
+		for (Connection connection : manager.getNodeConnections(node)) {
+			lines.add(connection.getLine());
+		}
+		
+		return lines;
 	}
 }

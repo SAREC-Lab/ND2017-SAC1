@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.util.ArrayList;
 
 import Drawing.ConnectionDrawer;
 import Drawing.NodeDrawer;
@@ -378,14 +379,14 @@ public class View {
 	// Draw connection between two nodes (called in event handlers)
 	private void drawConnection(Node start, Node end) {
 		Line connection = connectionDrawer.drawConnection(start, end);
-		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
-
-		// TODO: Add connection to model
-		start.getPane().updateNodeProperties();
-		end.getPane().updateNodeProperties();
-		selectedNode = null;
-		makingConnection = false;
-		deselectToggledNode();
+		if (controller.connectNodes(start, end, connection)) {
+			((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
+			start.getPane().updateNodeProperties();
+			end.getPane().updateNodeProperties();
+			selectedNode = null;
+			makingConnection = false;
+			deselectToggledNode();
+		}
 	}
 
 	// Add clicking and dragging event handlers to nodes
@@ -413,9 +414,7 @@ public class View {
 
 				// Handle making connection if in progress
 				if (makingConnection && selectedNode != null) {
-					if (controller.connectNodes(selectedNode, node)) {
-						drawConnection(selectedNode, node);
-					}
+					drawConnection(selectedNode, node);
 				}
 
 				selectedNode = node;
@@ -447,6 +446,10 @@ public class View {
 				{
 					@Override
 					public void handle(ActionEvent event){
+						ArrayList<Line> lines = controller.getConnectionLines(node);
+						for (Line line: lines) {
+							((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(line);
+						}
 						controller.removeNode(node);
 						((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(shape);
 						deleteBtn.setVisible(false);
