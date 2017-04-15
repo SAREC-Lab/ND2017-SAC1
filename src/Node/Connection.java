@@ -7,10 +7,9 @@ public class Connection {
 	Node start;
 	Node end;
 	
-	public Connection(Node s, Node e, Line l) {
+	public Connection(Node s, Node e) {
 		start = s;
 		end = e;
-		line = l;
 	}
 	
 	public Line getLine() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import Drawing.ConnectionDrawer;
 import Drawing.NodeDrawer;
 import Drawing.NodePane;
+import Node.Connection;
 import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
@@ -376,19 +377,6 @@ public class View {
 		});
 	}
 
-	// Draw connection between two nodes (called in event handlers)
-	private void drawConnection(Node start, Node end) {
-		Line connection = connectionDrawer.drawConnection(start, end);
-		if (controller.connectNodes(start, end, connection)) {
-			((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
-			start.getPane().updateNodeProperties();
-			end.getPane().updateNodeProperties();
-			selectedNode = null;
-			makingConnection = false;
-			deselectToggledNode();
-		}
-	}
-
 	// Add clicking and dragging event handlers to nodes
 	private void addEventHandlersToNode(Node node) {
 		final Point originalTranslation = new Point();
@@ -414,7 +402,7 @@ public class View {
 
 				// Handle making connection if in progress
 				if (makingConnection && selectedNode != null) {
-					drawConnection(selectedNode, node);
+					controller.createConnection(selectedNode, node);
 				}
 
 				selectedNode = node;
@@ -480,5 +468,22 @@ public class View {
 				node.getCoordinates().setLocation((int) screenBounds.getMinX(), (int) screenBounds.getMinY());
 			}
 		});
+	}
+	
+	// Draw connection between two nodes (called in event handlers)
+	public void drawConnection(Connection connection) {
+		Line line = connectionDrawer.drawConnection(connection.getStart(), connection.getEnd());
+		connection.setLine(line);
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(line);
+		addEventHandlersToConnection(connection);
+		connection.getStart().getPane().updateNodeProperties();
+		connection.getEnd().getPane().updateNodeProperties();
+		selectedNode = null;
+		makingConnection = false;
+		deselectToggledNode();
+	}
+
+	private void addEventHandlersToConnection(Connection connection) {
+		
 	}
 }

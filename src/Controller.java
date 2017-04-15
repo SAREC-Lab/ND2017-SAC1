@@ -41,25 +41,13 @@ public class Controller{
 		manager.removeNode(n);
 	}
 
-	public boolean connectNodes(Node start, Node end, Line connection) {
-		if (!validateConnection(start, end)) {
-			return false;
-		} else {
-			MainNode main_node = (MainNode) start;
-			main_node.addChild(end);
-			end.addParent(main_node);
-			manager.addConnection(new Connection(start, end, connection));
-			return true;
-		}
-	}
-
 	private boolean validateConnection(Node start, Node end) {
 		//TODO: more complicated validation
 		if (start.getClass() != MainNode.class) {
 			return false;
 		}
 
-		if (start.equals(end)) {
+		if (start == end) {
 			return false;
 		}
 
@@ -74,5 +62,16 @@ public class Controller{
 		}
 		
 		return lines;
+	}
+
+	public void createConnection(Node start, Node end) {
+		if (validateConnection(start, end)) {
+			MainNode main_node = (MainNode) start;
+			main_node.addChild(end);
+			end.addParent(main_node);
+			Connection connection = new Connection(start, end);
+			manager.addConnection(connection);
+			view.drawConnection(connection);
+		}
 	}
 }
