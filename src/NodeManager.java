@@ -77,4 +77,13 @@ public class NodeManager {
 			}
 		}
 	}
+
+	public void removeConnection(Connection connection) {
+		connections.remove(connection);
+		if (connection.getStart().getClass() == MainNode.class) {
+			MainNode main_node = (MainNode) connection.getStart();
+			connection.getEnd().removeParent(main_node);
+			main_node.removeChild(connection.getEnd());
+		}
+	}
 }

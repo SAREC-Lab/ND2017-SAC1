@@ -74,4 +74,8 @@ public class Controller{
 			view.drawConnection(connection);
 		}
 	}
+
+	public void removeConnection(Connection connection) {
+		manager.removeConnection(connection);	
+	}
 }

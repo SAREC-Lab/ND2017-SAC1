@@ -484,6 +484,28 @@ public class View {
 	}
 
 	private void addEventHandlersToConnection(Connection connection) {
+		Line line = connection.getLine();
 		
+		line.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				deleteBtn.setVisible(true);
+				title.setVisible(false);
+				description.setVisible(false);
+				
+				deleteBtn.setOnAction(new EventHandler<ActionEvent>()
+				{
+					@Override
+					public void handle(ActionEvent event){
+						//remove from view
+						((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(connection.getLine());
+						controller.removeConnection(connection);
+						deleteBtn.setVisible(false);
+					}
+
+				});
+			}
+		});
 	}
 }
