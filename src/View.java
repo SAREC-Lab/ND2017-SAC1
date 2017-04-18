@@ -1,5 +1,6 @@
 import java.awt.Point;
 
+import Drawing.Arrow;
 import Drawing.ConnectionDrawer;
 import Drawing.NodeDrawer;
 import Drawing.NodePane;
@@ -195,6 +196,7 @@ public class View {
 		cRelationBtn.setMaxWidth(200);
 		cRelationBtn.setToggleGroup(toolGroup);
 		cRelationBtn.setGraphic(hBox);
+		cRelationBtn.setUserData(true);
 		cRelationBtn.setOnAction(new EventHandler<ActionEvent>()
 		{
 			@Override
@@ -223,6 +225,7 @@ public class View {
 		sRelationBtn.setMaxWidth(200);
 		sRelationBtn.setToggleGroup(toolGroup);
 		sRelationBtn.setGraphic(hBox2);
+		sRelationBtn.setUserData(false);
 		sRelationBtn.setOnAction(new EventHandler<ActionEvent>()
 		{
 			@Override
@@ -349,6 +352,8 @@ public class View {
 	public NodeType getSelectedNodeType() {
 		if (toolGroup.getSelectedToggle() == null) {
 			return null;
+		} else if (toolGroup.getSelectedToggle().getUserData() instanceof Boolean) {
+			return null;
 		} else {
 			return (NodeType)toolGroup.getSelectedToggle().getUserData();
 		}
@@ -377,12 +382,27 @@ public class View {
 	
 	// Draw connection between two nodes (called in event handlers)
 	private void drawConnection(Node start, Node end) {
-		Line connection = connectionDrawer.drawConnection(start, end);
-		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
+		Arrow connection = connectionDrawer.drawConnection(start, end, (boolean) toolGroup.getSelectedToggle().getUserData());
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection.getArrow());
+		
+		// If either node ever moves, update arrowhead on connection to match
+		start.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
+			@Override 
+			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+				connection.updateArrowheadLocation();
+			}
+		});
+		end.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
+			@Override 
+			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+				connection.updateArrowheadLocation();
+			}
+		});
 		
 		// TODO: Add connection to model
 		start.getPane().updateNodeProperties();
 		end.getPane().updateNodeProperties();
+		connection.updateArrowheadLocation();
 		selectedNode = null;
 		makingConnection = false;
 		deselectToggledNode();
@@ -392,7 +412,7 @@ public class View {
 	private void addEventHandlersToNode(Node node) {
 		final Point originalTranslation = new Point();
 		NodePane shape = node.getPane();
-
+		
 		shape.setOnMousePressed(new EventHandler<MouseEvent>()
 		{
 			@Override

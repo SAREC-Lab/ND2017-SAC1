@@ -5,10 +5,12 @@ import javafx.scene.shape.Line;
 
 public class ConnectionDrawer {
 	
-	public Line drawConnection(Node start, Node end) {
+	public Arrow drawConnection(Node start, Node end, boolean filled) {
+		Arrow arrow = new Arrow(start.getCoordinates(), end.getCoordinates(), filled);
+		Line line = arrow.getArrowLine();
+		
 		double xDiff = start.getCoordinates().getX() - end.getCoordinates().getX();
 		double yDiff = start.getCoordinates().getY() - end.getCoordinates().getY();
-		Line line = new Line();
 		
 		if (Math.abs(xDiff) > Math.abs(yDiff)) {
 			// Start is on left of end
@@ -41,6 +43,6 @@ public class ConnectionDrawer {
 			}
 		}
 
-		return line;
+		return arrow;
 	}
 }
