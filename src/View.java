@@ -1,10 +1,11 @@
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import Drawing.ConnectionDrawer;
 import Drawing.NodeDrawer;
 import Drawing.NodePane;
+import Node.Connection;
 import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
@@ -62,7 +63,7 @@ public class View {
 	private Controller controller;
 	private boolean makingConnection;
 	private Node selectedNode;
-	
+
 	public View(Stage windowStage) {
 		root = new BorderPane();
 
@@ -276,7 +277,7 @@ public class View {
 				selectedNode = null;
 			}
 		});
-		
+
 
 		//Fill Button
 		Text fillTitle = new Text("Fill");
@@ -415,27 +416,14 @@ public class View {
 		addEventHandlersToNode(node);
 		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(node.getPane());
 		node.getPane().updateNodeProperties();
-		
+
 		// If the node ever moves, update connection properties to match
 		node.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
-            @Override 
-            public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
-                node.getPane().updateNodeProperties();
-            }
-        });
-	}
-	
-	// Draw connection between two nodes (called in event handlers)
-	private void drawConnection(Node start, Node end) {
-		Line connection = connectionDrawer.drawConnection(start, end);
-		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection);
-		
-		// TODO: Add connection to model
-		start.getPane().updateNodeProperties();
-		end.getPane().updateNodeProperties();
-		selectedNode = null;
-		makingConnection = false;
-		deselectToggledNode();
+			@Override 
+			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+				node.getPane().updateNodeProperties();
+			}
+		});
 	}
 
 	// Add clicking and dragging event handlers to nodes
@@ -460,12 +448,12 @@ public class View {
 		{
 			@Override
 			public void handle(MouseEvent mouseEvent) {
-				
+
 				// Handle making connection if in progress
 				if (makingConnection && selectedNode != null) {
-					drawConnection(selectedNode, node);
+					controller.createConnection(selectedNode, node);
 				}
-				
+
 				selectedNode = node;
 				addRootBtn.setVisible(false);
 				deleteBtn.setVisible(true);
@@ -473,7 +461,7 @@ public class View {
 				description.setVisible(true);
 				title.setText(node.getName());
 				description.setText(node.getDescription());
-				
+
 				title.setOnKeyReleased(new EventHandler<KeyEvent>()
 				{
 					@Override
@@ -496,6 +484,10 @@ public class View {
 				{
 					@Override
 					public void handle(ActionEvent event){
+						ArrayList<Line> lines = controller.getConnectionLines(node);
+						for (Line line: lines) {
+							((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(line);
+						}
 						controller.removeNode(node);
 						((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(shape);
 						deleteBtn.setVisible(false);
@@ -516,7 +508,7 @@ public class View {
 				}
 			}
 		});
-		
+
 		shape.setOnMouseDragged(new EventHandler<MouseEvent>()
 		{
 			@Override
@@ -529,11 +521,50 @@ public class View {
 
 				shape.setTranslateX(newTranslateX);
 				shape.setTranslateY(newTranslateY);
-			
+
 				// Set new coordinates
 				Bounds bounds = shape.getBoundsInLocal();
-		        Bounds screenBounds = shape.localToParent(bounds);
+				Bounds screenBounds = shape.localToParent(bounds);
 				node.getCoordinates().setLocation((int) screenBounds.getMinX(), (int) screenBounds.getMinY());
+			}
+		});
+	}
+	
+	// Draw connection between two nodes (called in event handlers)
+	public void drawConnection(Connection connection) {
+		Line line = connectionDrawer.drawConnection(connection.getStart(), connection.getEnd());
+		connection.setLine(line);
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(line);
+		addEventHandlersToConnection(connection);
+		connection.getStart().getPane().updateNodeProperties();
+		connection.getEnd().getPane().updateNodeProperties();
+		selectedNode = null;
+		makingConnection = false;
+		deselectToggledNode();
+	}
+
+	private void addEventHandlersToConnection(Connection connection) {
+		Line line = connection.getLine();
+		
+		line.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				deleteBtn.setVisible(true);
+				title.setVisible(false);
+				description.setVisible(false);
+				
+				deleteBtn.setOnAction(new EventHandler<ActionEvent>()
+				{
+					@Override
+					public void handle(ActionEvent event){
+						//remove from view
+						((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(connection.getLine());
+						controller.removeConnection(connection);
+						deleteBtn.setVisible(false);
+					}
+
+				});
 			}
 		});
 	}

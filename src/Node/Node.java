@@ -1,6 +1,7 @@
 package Node;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 import Drawing.NodePane;
 import javafx.scene.paint.Color;
@@ -14,6 +15,7 @@ public abstract class Node {
 	private Color fill;
 	private NodePane pane;
 	private final int identifier;   
+	private ArrayList<MainNode> parents = new ArrayList<MainNode>();
 	
 	public Node(String n, String d, NodeType nt, Point c, int id) {
 		identifier = id;
@@ -83,6 +85,18 @@ public abstract class Node {
 	
 	public NodePane getPane() {
 		return pane;
+	}
+	
+	public void addParent(MainNode n) {
+		parents.add(n);
+	}
+	
+	public void removeParent(MainNode n) {
+		parents.remove(n);
+	}
+	
+	public ArrayList<MainNode> getParents() {
+		return parents;
 	}
 	
 	@Override
