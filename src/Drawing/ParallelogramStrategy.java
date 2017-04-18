@@ -30,6 +30,7 @@ public class ParallelogramStrategy implements NodeDrawingStrategy {
 		description.setFont(new Font(8));
 		//description.setBoundsType(TextBoundsType.VISUAL);
 		description.setFill(Color.GRAY);
+		description.setWrappingWidth(70);
 		
 		VBox vBox = new VBox();
 		vBox.getChildren().addAll(text, description);
