@@ -1,4 +1,9 @@
 import java.awt.Point;
+import java.io.File;
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import Node.MainNode;
 import Node.Node;
@@ -45,7 +50,7 @@ public class Controller{
 		manager.removeNode(n);
 	}
 
-	public void traverse(boolean b) {
-		manager.traverse(b);
+	public void traverse(boolean b, File file) throws JsonGenerationException, JsonMappingException, IOException {
+		manager.traverse(b,file);
 	}
 }

@@ -1,4 +1,6 @@
 import java.awt.Point;
+import java.io.File;
+import java.io.IOException;
 
 import Drawing.ConnectionDrawer;
 import Drawing.NodeDrawer;
@@ -38,6 +40,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 
@@ -65,6 +68,7 @@ public class View {
 
 		ToolBar leftBar = new ToolBar();
 		leftBar = createToolBox();
+		FileChooser fileChooser = new FileChooser();
 
 		Button newBtn = new Button("New");
 		Button importBtn = new Button("Import");
@@ -75,7 +79,14 @@ public class View {
 		{
 			@Override
 			public void handle(ActionEvent event){
-				controller.traverse(false);
+	            fileChooser.setTitle("Save File");
+	            File file = fileChooser.showSaveDialog(windowStage);
+				try {
+					controller.traverse(false,file);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 		});
@@ -83,7 +94,23 @@ public class View {
 		{
 			@Override
 			public void handle(ActionEvent event){
-				controller.traverse(true);
+				fileChooser.setTitle("Save File");
+	            File file = fileChooser.showSaveDialog(windowStage);
+				try {
+					controller.traverse(true,file);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		});
+		importBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+	            fileChooser.setTitle("Save File");
+	            File file = fileChooser.showOpenDialog(windowStage);
 			}
 
 		});
