@@ -1,9 +1,12 @@
 import java.awt.Point;
+import java.util.ArrayList;
 
+import Node.Connection;
 import Node.MainNode;
 import Node.Node;
 import Node.NodeType;
 import Node.SupportingNode;
+import javafx.scene.shape.Line;
 
 public class Controller{
 
@@ -36,5 +39,43 @@ public class Controller{
 
 	public void removeNode(Node n) {
 		manager.removeNode(n);
+	}
+
+	private boolean validateConnection(Node start, Node end) {
+		//TODO: more complicated validation
+		if (start.getClass() != MainNode.class) {
+			return false;
+		}
+
+		if (start == end) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public ArrayList<Line> getConnectionLines(Node node) {
+		ArrayList<Line> lines = new ArrayList<Line>();
+		
+		for (Connection connection : manager.getNodeConnections(node)) {
+			lines.add(connection.getLine());
+		}
+		
+		return lines;
+	}
+
+	public void createConnection(Node start, Node end) {
+		if (validateConnection(start, end)) {
+			MainNode main_node = (MainNode) start;
+			main_node.addChild(end);
+			end.addParent(main_node);
+			Connection connection = new Connection(start, end);
+			manager.addConnection(connection);
+			view.drawConnection(connection);
+		}
+	}
+
+	public void removeConnection(Connection connection) {
+		manager.removeConnection(connection);	
 	}
 }
