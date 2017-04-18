@@ -1,9 +1,11 @@
 import java.awt.Point;
+import java.util.ArrayList;
 
 import Drawing.Arrow;
 import Drawing.ConnectionDrawer;
 import Drawing.NodeDrawer;
 import Drawing.NodePane;
+import Node.Connection;
 import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
@@ -13,6 +15,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
@@ -59,7 +62,7 @@ public class View {
 	private Controller controller;
 	private boolean makingConnection;
 	private Node selectedNode;
-	
+
 	public View(Stage windowStage) {
 		root = new BorderPane();
 
@@ -234,7 +237,7 @@ public class View {
 				selectedNode = null;
 			}
 		});
-		
+
 
 		//Fill Button
 		Text fillTitle = new Text("Fill");
@@ -370,7 +373,7 @@ public class View {
 		addEventHandlersToNode(node);
 		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(node.getPane());
 		node.getPane().updateNodeProperties();
-		
+
 		// If the node ever moves, update connection properties to match
 		node.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
             @Override 
@@ -381,32 +384,32 @@ public class View {
 	}
 	
 	// Draw connection between two nodes (called in event handlers)
-	private void drawConnection(Node start, Node end) {
-		Arrow connection = connectionDrawer.drawConnection(start, end, (boolean) toolGroup.getSelectedToggle().getUserData());
-		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection.getArrow());
-		
-		// If either node ever moves, update arrowhead on connection to match
-		start.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
-			@Override 
-			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
-				connection.updateArrowheadLocation();
-			}
-		});
-		end.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
-			@Override 
-			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
-				connection.updateArrowheadLocation();
-			}
-		});
-		
-		// TODO: Add connection to model
-		start.getPane().updateNodeProperties();
-		end.getPane().updateNodeProperties();
-		connection.updateArrowheadLocation();
-		selectedNode = null;
-		makingConnection = false;
-		deselectToggledNode();
-	}
+//	private void drawConnection(Node start, Node end) {
+//		Arrow connection = connectionDrawer.drawConnection(start, end, (boolean) toolGroup.getSelectedToggle().getUserData());
+//		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection.getArrow());
+//		
+//		// If either node ever moves, update arrowhead on connection to match
+//		start.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
+//			@Override 
+//			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+//				connection.updateArrowheadLocation();
+//			}
+//		});
+//		end.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
+//			@Override 
+//			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+//				connection.updateArrowheadLocation();
+//			}
+//		});
+//		
+//		// TODO: Add connection to model
+//		start.getPane().updateNodeProperties();
+//		end.getPane().updateNodeProperties();
+//		connection.updateArrowheadLocation();
+//		selectedNode = null;
+//		makingConnection = false;
+//		deselectToggledNode();
+//	}
 
 	// Add clicking and dragging event handlers to nodes
 	private void addEventHandlersToNode(Node node) {
@@ -430,19 +433,19 @@ public class View {
 		{
 			@Override
 			public void handle(MouseEvent mouseEvent) {
-				
+
 				// Handle making connection if in progress
 				if (makingConnection && selectedNode != null) {
-					drawConnection(selectedNode, node);
+					controller.createConnection(selectedNode, node);
 				}
-				
+
 				selectedNode = node;
 				deleteBtn.setVisible(true);
 				title.setVisible(true);
 				description.setVisible(true);
 				title.setText(node.getName());
 				description.setText(node.getDescription());
-				
+
 				title.setOnKeyReleased(new EventHandler<KeyEvent>()
 				{
 					@Override
@@ -465,6 +468,10 @@ public class View {
 				{
 					@Override
 					public void handle(ActionEvent event){
+						ArrayList<Group> arrows = controller.getConnectionArrows(node);
+						for (Group arrow: arrows) {
+							((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(arrow);
+						}
 						controller.removeNode(node);
 						((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(shape);
 						deleteBtn.setVisible(false);
@@ -475,7 +482,7 @@ public class View {
 				});
 			}
 		});
-		
+
 		shape.setOnMouseDragged(new EventHandler<MouseEvent>()
 		{
 			@Override
@@ -488,11 +495,67 @@ public class View {
 
 				shape.setTranslateX(newTranslateX);
 				shape.setTranslateY(newTranslateY);
-			
+
 				// Set new coordinates
 				Bounds bounds = shape.getBoundsInLocal();
-		        Bounds screenBounds = shape.localToParent(bounds);
+				Bounds screenBounds = shape.localToParent(bounds);
 				node.getCoordinates().setLocation((int) screenBounds.getMinX(), (int) screenBounds.getMinY());
+			}
+		});
+	}
+	
+	// Draw connection between two nodes (called in event handlers)
+	public void drawConnection(Connection connection) {
+		Arrow arrow = connectionDrawer.drawConnection(connection.getStart(), connection.getEnd(), (boolean) toolGroup.getSelectedToggle().getUserData());
+		connection.setArrow(arrow.getArrow());
+		
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(arrow.getArrow());
+		addEventHandlersToConnection(connection, arrow);
+		
+		connection.getStart().getPane().updateNodeProperties();
+		connection.getEnd().getPane().updateNodeProperties();
+		arrow.updateArrowheadLocation();
+		selectedNode = null;
+		makingConnection = false;
+		deselectToggledNode();
+	}
+
+	private void addEventHandlersToConnection(Connection connection, Arrow arrowObject) {
+		Group arrow = connection.getArrow();
+		
+		arrow.setOnMouseClicked(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				deleteBtn.setVisible(true);
+				title.setVisible(false);
+				description.setVisible(false);
+				
+				deleteBtn.setOnAction(new EventHandler<ActionEvent>()
+				{
+					@Override
+					public void handle(ActionEvent event){
+						//remove from view
+						((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().remove(connection.getArrow());
+						controller.removeConnection(connection);
+						deleteBtn.setVisible(false);
+					}
+
+				});
+			}
+		});
+		
+		// If either node ever moves, update arrowhead on connection to match
+		connection.getStart().getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
+			@Override 
+			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+				arrowObject.updateArrowheadLocation();
+			}
+		});
+		connection.getEnd().getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
+			@Override 
+			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+				arrowObject.updateArrowheadLocation();
 			}
 		});
 	}
