@@ -589,16 +589,18 @@ public class View {
 			}
 		});
 		
-		// If either node ever moves, update arrowhead on connection to match
+		// If either node ever moves, update arrowhead and connection to match
 		connection.getStart().getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
 			@Override 
 			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+				connectionDrawer.optimizeConnectionPlacement(arrowObject, connection.getStart(), connection.getEnd());
 				arrowObject.updateArrowheadLocation();
 			}
 		});
 		connection.getEnd().getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
 			@Override 
 			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+				connectionDrawer.optimizeConnectionPlacement(arrowObject, connection.getStart(), connection.getEnd());
 				arrowObject.updateArrowheadLocation();
 			}
 		});
