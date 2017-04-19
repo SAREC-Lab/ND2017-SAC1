@@ -1,16 +1,10 @@
 import java.awt.Point;
 import java.util.ArrayList;
-
-import Drawing.CircleStrategy;
 import Drawing.Arrow;
 import Drawing.ConnectionDrawer;
-import Drawing.EllipseStrategy;
 import Drawing.NodeDrawer;
 import Drawing.NodePane;
-import Drawing.ParallelogramStrategy;
-import Drawing.RectangleStrategy;
 import Node.Connection;
-
 import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
@@ -49,7 +43,6 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
-import Node.NodeType;
 
 
 public class View {
@@ -504,8 +497,6 @@ public class View {
 			//System.out.println(description.getText().length());
 			r = (length-40)%32;
 			m = (length-40)/32;
-			System.out.println("m:" + m);
-			System.out.println("r:" + r);
 			if(r==0){
 				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
 				shape.getChildren().get(0).setScaleY(1.2 + m*0.3);
@@ -513,7 +504,7 @@ public class View {
 			}
 			break;
 		case SOLUTION:	//circle
-			System.out.println(description.getText().length());
+			//System.out.println(description.getText().length());
 			r = (length-45)%34;
 			m = (length-45)/34;
 			if(r==0){
