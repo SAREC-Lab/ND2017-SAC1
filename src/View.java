@@ -83,7 +83,9 @@ public class View {
 	            fileChooser.setTitle("Save File");
 	            File file = fileChooser.showSaveDialog(windowStage);
 				try {
-					controller.traverse(false,file);
+					if (file != null) {
+						controller.traverse(false,file);
+					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -98,7 +100,9 @@ public class View {
 				fileChooser.setTitle("Save File");
 	            File file = fileChooser.showSaveDialog(windowStage);
 				try {
-					controller.traverse(true,file);
+					if (file != null) {
+						controller.traverse(true,file);
+					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -112,6 +116,14 @@ public class View {
 			public void handle(ActionEvent event){
 	            fileChooser.setTitle("Save File");
 	            File file = fileChooser.showOpenDialog(windowStage);
+	            try {
+	            	if (file != null) {
+	            		controller.load(file);
+	            	}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 		});
@@ -407,7 +419,9 @@ public class View {
 
 	// Deselect toggled node
 	public void deselectToggledNode() {
-		toolGroup.getSelectedToggle().setSelected(false);
+		if (toolGroup.getSelectedToggle() != null) {
+			toolGroup.getSelectedToggle().setSelected(false);
+		}
 	}
 
 	// Set nodedrawer strategy and draw node adding it to pane

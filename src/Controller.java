@@ -1,10 +1,7 @@
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import java.util.ArrayList;
-
 import Node.Connection;
 import Node.MainNode;
 import Node.Node;
@@ -52,7 +49,7 @@ public class Controller{
 		manager.removeNode(n);
 	}
 
-	public void traverse(boolean b, File file) throws JsonGenerationException, JsonMappingException, IOException {
+	public void traverse(boolean b, File file) throws IOException {
 		manager.traverse(b,file);
 	}
 	
@@ -92,5 +89,18 @@ public class Controller{
 
 	public void removeConnection(Connection connection) {
 		manager.removeConnection(connection);	
+	}
+
+	public void load(File file) throws IOException {
+		manager.load(file);
+		ArrayList<Connection> connections = manager.getConnections();
+		ArrayList<Node> nodes = manager.getNodes();
+		for (Node n: nodes) {
+			view.drawNode(n);
+		}
+		for (Connection c: connections) {
+			view.drawConnection(c);
+		}
+		
 	}
 }

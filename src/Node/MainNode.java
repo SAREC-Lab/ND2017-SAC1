@@ -12,10 +12,14 @@ public class MainNode extends Node {
 
 	public MainNode(String n, String d, NodeType nt, Point c, int id) {
 		super(n, d, nt, c, id);
+		this.setType("Node.MainNode");
 		
 		if (!allowableNodeTypes.contains(nt)) {
 			throw new IllegalArgumentException("NodeType " + nt.toString() + " not an allowable type for MainNode.");
 		}
+	}
+	
+	public MainNode() {
 	}
 	
 	public void addChild(Node n) {
@@ -25,7 +29,7 @@ public class MainNode extends Node {
 	public void removeChild(Node n) {
 		children.remove(n);
 	}
-	
+
 	public Set<Node> getChildren() {
 		return children;
 	}

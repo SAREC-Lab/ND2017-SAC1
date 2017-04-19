@@ -1,13 +1,19 @@
 import SAC.SAC;
-
+import javafx.scene.shape.Line;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import Node.Node;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import Node.NodeDeserializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import java.util.Iterator;
+import java.util.Set;
 import Node.Connection;
 import Node.MainNode;
 
@@ -56,12 +62,27 @@ public class NodeManager {
 	public void setSACRootNode(Node n) {
 		sac.setRootNode(n);
 	}
+	
+	public ArrayList<Connection> getConnections() {
+		return connections;
+	}
+	
+	public ArrayList<Node> getNodes() {
+		return nodes;
+	}
 
-	public void traverse(boolean b, File file) throws JsonGenerationException, JsonMappingException, IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.addMixInAnnotations(Node.class, Mixin.class);
-		mapper.addMixInAnnotations(Node.class, Mixin.class);
-		mapper.writeValue(file, nodes);
+	public void traverse(boolean b, File file) throws IOException {
+//		ObjectMapper mapper = new ObjectMapper();
+//		mapper.writeValue(file, connections);
+		GsonBuilder gsonBuilder = new GsonBuilder();
+	    gsonBuilder.registerTypeAdapter(Node.class, new NodeDeserializer<Node>());
+	    gsonBuilder.setPrettyPrinting();
+		Gson gson = gsonBuilder.create();
+		String str = gson.toJson(connections);
+		FileWriter writer = new FileWriter(file);
+		writer.write(str);
+		writer.close();
+		//gson.toJson(connections,new FileWriter(file));
 	}
 	
 	public void addConnection(Connection r) {
@@ -97,5 +118,39 @@ public class NodeManager {
 			connection.getEnd().removeParent(main_node);
 			main_node.removeChild(connection.getEnd());
 		}
+	}
+	
+	public void load(File file) throws IOException {
+		connections.clear();
+		nodes.clear();
+
+		Set<Node> nodeSet = new HashSet<Node>();
+		MainNode start;
+		Node end;
+//		ObjectMapper mapper = new ObjectMapper();
+//		NodeDeserializer nd = new NodeDeserializer();
+//		nd.registerNode("children", MainNode.class);
+//		nd.registerNode("supportingNode", SupportingNode.class);
+//		SimpleModule module = new SimpleModule();
+//		module.addDeserializer(Node.class, nd);
+//		mapper.registerModule(module);
+//		connections = mapper.readValue(file, new TypeReference<ArrayList<Connection>>(){});
+		GsonBuilder gsonBuilder = new GsonBuilder();
+	    gsonBuilder.registerTypeAdapter(Node.class, new NodeDeserializer<Node>());
+	    gsonBuilder.setPrettyPrinting();
+		Gson gson = gsonBuilder.create();
+		JsonReader reader = new JsonReader(new FileReader(file));
+		connections = gson.fromJson(reader, new TypeToken<ArrayList<Connection>>(){}.getType());
+		
+		for (Connection c: connections) {
+			start = (MainNode) c.getStart();
+			end = c.getEnd();
+			start.addChild(end);
+			end.addParent(start);
+			nodeSet.add(start);
+			nodeSet.add(end);
+			c.setLine(new Line(c.getStartx(),c.getStarty(),c.getEndx(),c.getEndy()));
+		}
+		nodes.addAll(nodeSet);
 	}
 }

@@ -1,11 +1,7 @@
 package Tests;
 
-import static org.junit.Assert.*;
-
 import java.awt.Point;
-
 import org.junit.Test;
-
 import Node.MainNode;
 import Node.Node;
 import Node.NodeType;
