@@ -1,9 +1,9 @@
 package Node;
 
-import javafx.scene.shape.Line;
+import javafx.scene.Group;
 
 public class Connection {
-	Line line;
+	Group arrow;
 	Node start;
 	Node end;
 	
@@ -12,12 +12,12 @@ public class Connection {
 		end = e;
 	}
 	
-	public Line getLine() {
-		return line;
+	public Group getArrow() {
+		return arrow;
 	}
 	
-	public void setLine(Line l) {
-		line = l;
+	public void setArrow(Group a) {
+		arrow = a;
 	}
 	
 	public Node getStart() {

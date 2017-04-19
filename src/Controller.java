@@ -6,7 +6,7 @@ import Node.MainNode;
 import Node.Node;
 import Node.NodeType;
 import Node.SupportingNode;
-import javafx.scene.shape.Line;
+import javafx.scene.Group;
 
 public class Controller{
 
@@ -54,14 +54,14 @@ public class Controller{
 		return true;
 	}
 
-	public ArrayList<Line> getConnectionLines(Node node) {
-		ArrayList<Line> lines = new ArrayList<Line>();
+	public ArrayList<Group> getConnectionArrows(Node node) {
+		ArrayList<Group> arrows = new ArrayList<Group>();
 		
 		for (Connection connection : manager.getNodeConnections(node)) {
-			lines.add(connection.getLine());
+			arrows.add(connection.getArrow());
 		}
 		
-		return lines;
+		return arrows;
 	}
 
 	public void createConnection(Node start, Node end) {
