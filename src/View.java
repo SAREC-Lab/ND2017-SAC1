@@ -1,12 +1,10 @@
 import java.awt.Point;
 import java.util.ArrayList;
-
 import Drawing.Arrow;
 import Drawing.ConnectionDrawer;
 import Drawing.NodeDrawer;
 import Drawing.NodePane;
 import Node.Connection;
-
 import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
@@ -29,6 +27,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -432,9 +431,13 @@ public class View {
 				{
 					@Override
 					public void handle(KeyEvent event) {
+						Boolean delete = new Boolean(false);
 						node.setDescription(description.getText());
 						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(1)).setText(description.getText());
-						resize(node, shape);
+					    if (event.getCode().equals(KeyCode.BACK_SPACE)) {
+					        delete = true;
+					    }
+						resize(node, shape, delete);
 					}
 				});
 				deleteBtn.setOnAction(new EventHandler<ActionEvent>()
@@ -477,7 +480,7 @@ public class View {
 		});
 	}
 	
-	public void resize(Node node, NodePane shape){
+	public void resize(Node node, NodePane shape, Boolean delete){
 		Text t = ((Text)((VBox)shape.getChildren().get(1)).getChildren().get(1));
 		Text description = new Text(node.getDescription());
 		int length = new Integer(description.getText().length());
@@ -489,32 +492,42 @@ public class View {
 			//System.out.println(description.getText().length());
 			r = (length-45)%34;
 			m = (length-45)/34;
-			if(r==0){
+			if(r==0 && delete == false){
 				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
 				shape.getChildren().get(0).setScaleY(1.2 + m*0.2);
-				t.setWrappingWidth(t.getWrappingWidth() + 20);
+				t.setWrappingWidth(t.getWrappingWidth() + 15);
+			}else if(r==0){
+				shape.getChildren().get(0).setScaleX(1.0 + m*0.2);
+				shape.getChildren().get(0).setScaleY(1.0 + m*0.2);
+				t.setWrappingWidth(t.getWrappingWidth() - 15);
 			}
 			break;
 		case CONTEXT:	//rounded rectangle
 			//System.out.println(description.getText().length());
 			r = (length-40)%32;
 			m = (length-40)/32;
-			System.out.println("m:" + m);
-			System.out.println("r:" + r);
-			if(r==0){
+			if(r==0 && delete == false){
 				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
 				shape.getChildren().get(0).setScaleY(1.2 + m*0.3);
 				t.setWrappingWidth(t.getWrappingWidth() + 10);
+			}else if(r==0){
+				shape.getChildren().get(0).setScaleX(1.0 + m*0.2);
+				shape.getChildren().get(0).setScaleY(1.0 + m*0.2);
+				t.setWrappingWidth(t.getWrappingWidth() - 10);
 			}
 			break;
 		case SOLUTION:	//circle
-			System.out.println(description.getText().length());
+			//System.out.println(description.getText().length());
 			r = (length-45)%34;
 			m = (length-45)/34;
-			if(r==0){
+			if(r==0 && delete == false){
 				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
 				shape.getChildren().get(0).setScaleY(1.2 + m*0.2);
 				t.setWrappingWidth(t.getWrappingWidth() + 10);
+			}else if(r==0){
+				shape.getChildren().get(0).setScaleX(1.0 + m*0.2);
+				shape.getChildren().get(0).setScaleY(1.0 + m*0.2);
+				t.setWrappingWidth(t.getWrappingWidth() - 10);
 			}
 			break;
 		case JUSTIFICATION:
@@ -522,10 +535,14 @@ public class View {
 			//System.out.println(description.getText().length());
 			r = (length-45)%34;
 			m = (length-45)/34;
-			if(r==0){
+			if(r==0 && delete == false){
 				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
 				shape.getChildren().get(0).setScaleY(1.2 + m*0.2);
 				t.setWrappingWidth(t.getWrappingWidth() + 10);
+			}else if(r==0){
+				shape.getChildren().get(0).setScaleX(1.0 + m*0.2);
+				shape.getChildren().get(0).setScaleY(1.0 + m*0.2);
+				t.setWrappingWidth(t.getWrappingWidth() - 10);
 			}
 			break;
 		}
