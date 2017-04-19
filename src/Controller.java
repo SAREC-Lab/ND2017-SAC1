@@ -44,26 +44,36 @@ public class Controller{
 
 	private boolean validateConnection(Node start, Node end, ConnectionType ct) {
 		if (start == end) {
+			view.alert("A node cannot be connected to itself.");
 			return false;
 		}
 
 		//start node must be of MainNode class
 		if (start.getClass() != MainNode.class) {
+			view.alert("A parent node must be GOAL, STRATEGY, or SOLUTION");
 			return false;
 		}
 
 		//filled arrow must point to a MainNode
 		if (end.getClass() == MainNode.class && ct != ConnectionType.CONTEXTUAL) {
+			view.alert("This relationship is contextual and must used a filled-in arrow.");
 			return false;
 		}
 
 		//unfilled arrow must point to SupportingNode
 		if (end.getClass() == SupportingNode.class && ct != ConnectionType.SUPPORTING) {
+			view.alert("This relationship is supporting and must used an empty arrow.");
 			return false;
 		}
 
 		//check if they are already connected
-		if (end.isParentOf(start) || start.isParentOf(end)) {
+		if (end.isChildOf(start)) {
+			view.alert("The child node cannot already be a child of the parent node.");
+			return false;
+		}
+		
+		if (start.isChildOf(end)) {
+			view.alert("The parent node cannot already be a parent of the child node.");
 			return false;
 		}
 

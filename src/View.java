@@ -22,7 +22,10 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
@@ -416,6 +419,8 @@ public class View {
 				if (makingConnection && selectedNode != null) {
 					boolean filled = (boolean) toolGroup.getSelectedToggle().getUserData();
 					controller.createConnection(selectedNode, node, filled);
+					makingConnection = false;
+					deselectToggledNode();
 				}
 
 				selectedNode = node;
@@ -548,9 +553,6 @@ public class View {
 		connection.getStart().getPane().updateNodeProperties();
 		connection.getEnd().getPane().updateNodeProperties();
 		arrow.updateArrowheadLocation();
-		selectedNode = null;
-		makingConnection = false;
-		deselectToggledNode();
 	}
 
 	private void addEventHandlersToConnection(Connection connection, Arrow arrowObject) {
@@ -591,5 +593,10 @@ public class View {
 				arrowObject.updateArrowheadLocation();
 			}
 		});
+	}
+	
+	public void alert(String message) {
+		Alert a = new Alert(AlertType.INFORMATION, message, ButtonType.OK);
+		a.showAndWait();
 	}
 }

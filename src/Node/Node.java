@@ -94,7 +94,7 @@ public abstract class Node {
 		return parents;
 	}
 	
-	public boolean isParentOf(Node node) {
+	public boolean isChildOf(Node node) {
 
 		//tree traversal
 		LinkedList<Node> frontier = new LinkedList<Node>();
