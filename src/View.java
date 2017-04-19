@@ -382,34 +382,6 @@ public class View {
             }
         });
 	}
-	
-	// Draw connection between two nodes (called in event handlers)
-//	private void drawConnection(Node start, Node end) {
-//		Arrow connection = connectionDrawer.drawConnection(start, end, (boolean) toolGroup.getSelectedToggle().getUserData());
-//		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(connection.getArrow());
-//		
-//		// If either node ever moves, update arrowhead on connection to match
-//		start.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
-//			@Override 
-//			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
-//				connection.updateArrowheadLocation();
-//			}
-//		});
-//		end.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
-//			@Override 
-//			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
-//				connection.updateArrowheadLocation();
-//			}
-//		});
-//		
-//		// TODO: Add connection to model
-//		start.getPane().updateNodeProperties();
-//		end.getPane().updateNodeProperties();
-//		connection.updateArrowheadLocation();
-//		selectedNode = null;
-//		makingConnection = false;
-//		deselectToggledNode();
-//	}
 
 	// Add clicking and dragging event handlers to nodes
 	private void addEventHandlersToNode(Node node) {
