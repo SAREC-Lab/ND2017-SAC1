@@ -13,15 +13,13 @@ public abstract class Node {
 	private Color outline;
 	private Color fill;
 	private transient NodePane pane;
-	private int identifier;
 	private String type;
 	private transient ArrayList<MainNode> parents = new ArrayList<MainNode>();
 	
 	public Node() {
 	}
 	
-	public Node(String n, String d, NodeType nt, Point c, int id) {
-		identifier = id;
+	public Node(String n, String d, NodeType nt, Point c) {
 		name = n;
 		description = d;
 		nodeType = nt;
@@ -36,10 +34,6 @@ public abstract class Node {
 
 	public String getName() {
 		return name;
-	}
-	
-	public final int getID() {
-		return identifier;
 	}
 	
 	public String getDescription() {

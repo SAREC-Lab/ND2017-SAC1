@@ -12,8 +12,8 @@ public class SupportingNode extends Node {
 		
 	}
 	
-	public SupportingNode(String n, String d, NodeType nt, Point c, int id) {
-		super(n, d, nt, c, id);
+	public SupportingNode(String n, String d, NodeType nt, Point c) {
+		super(n, d, nt, c);
 		this.setType("Node.SupportingNode");
 		
 		if (!allowableNodeTypes.contains(nt)) {

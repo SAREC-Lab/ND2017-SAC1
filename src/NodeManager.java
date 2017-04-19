@@ -20,9 +20,13 @@ public class NodeManager {
 	private SAC sac = new SAC();
 	private ArrayList<Node> nodes = new ArrayList<Node>();
 	private ArrayList<Connection> connections = new ArrayList<Connection>();
-	
+	private Gson gson;
 	
 	public NodeManager() {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+	    gsonBuilder.registerTypeAdapter(Node.class, new NodeDeserializer<Node>());
+	    gsonBuilder.setPrettyPrinting();
+		gson = gsonBuilder.create();
 	}
 	
 	public void addNode(Node n) {
@@ -71,17 +75,13 @@ public class NodeManager {
 	}
 
 	public void traverse(boolean b, File file) throws IOException {
-//		ObjectMapper mapper = new ObjectMapper();
-//		mapper.writeValue(file, connections);
-		GsonBuilder gsonBuilder = new GsonBuilder();
-	    gsonBuilder.registerTypeAdapter(Node.class, new NodeDeserializer<Node>());
-	    gsonBuilder.setPrettyPrinting();
-		Gson gson = gsonBuilder.create();
+		// convert connections list to JSON string
 		String str = gson.toJson(connections);
+		
+		// write string to file
 		FileWriter writer = new FileWriter(file);
 		writer.write(str);
 		writer.close();
-		//gson.toJson(connections,new FileWriter(file));
 	}
 	
 	public void addConnection(Connection r) {
@@ -120,35 +120,32 @@ public class NodeManager {
 	}
 	
 	public void load(File file) throws IOException {
+		// clear nodes and connections from model
 		connections.clear();
 		nodes.clear();
-
-		Set<Node> nodeSet = new HashSet<Node>();
+		Set<Node> nodeSet = new HashSet<Node>(); // make set so no duplicate nodes are added 
+		
+		// start and end nodes
 		MainNode start;
 		Node end;
-//		ObjectMapper mapper = new ObjectMapper();
-//		NodeDeserializer nd = new NodeDeserializer();
-//		nd.registerNode("children", MainNode.class);
-//		nd.registerNode("supportingNode", SupportingNode.class);
-//		SimpleModule module = new SimpleModule();
-//		module.addDeserializer(Node.class, nd);
-//		mapper.registerModule(module);
-//		connections = mapper.readValue(file, new TypeReference<ArrayList<Connection>>(){});
-		GsonBuilder gsonBuilder = new GsonBuilder();
-	    gsonBuilder.registerTypeAdapter(Node.class, new NodeDeserializer<Node>());
-	    gsonBuilder.setPrettyPrinting();
-		Gson gson = gsonBuilder.create();
+		
+		// JSON Reader
 		JsonReader reader = new JsonReader(new FileReader(file));
 		connections = gson.fromJson(reader, new TypeToken<ArrayList<Connection>>(){}.getType());
 		
+		// iterate through connections in JSON
+		// adding nodes to hash and adding connections to list
 		for (Connection c: connections) {
 			start = (MainNode) c.getStart();
 			end = c.getEnd();
+			// add parents and children
 			start.addChild(end);
 			end.addParent(start);
 			nodeSet.add(start);
 			nodeSet.add(end);
 		}
+		// add nodes to node list from hash
 		nodes.addAll(nodeSet);
+		System.out.println(nodes.size());
 	}
 }

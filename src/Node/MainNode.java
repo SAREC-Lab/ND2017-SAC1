@@ -10,8 +10,8 @@ public class MainNode extends Node {
 	private Set<Node> children = new HashSet<Node>();
 	private static Set<NodeType> allowableNodeTypes = new HashSet<NodeType>(Arrays.asList(NodeType.GOAL, NodeType.STRATEGY, NodeType.SOLUTION));
 
-	public MainNode(String n, String d, NodeType nt, Point c, int id) {
-		super(n, d, nt, c, id);
+	public MainNode(String n, String d, NodeType nt, Point c) {
+		super(n, d, nt, c);
 		this.setType("Node.MainNode");
 		
 		if (!allowableNodeTypes.contains(nt)) {

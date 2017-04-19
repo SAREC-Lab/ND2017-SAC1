@@ -10,11 +10,11 @@ public class NodeTest {
 
 	@Test
 	public void testEqualsAndHash() {
-		MainNode mainNode1 = new MainNode("G1", "Goal Node", NodeType.GOAL, new Point(0,0),1);
-		MainNode mainNode2 = new MainNode("G1", "Goal Node", NodeType.GOAL, new Point(0,1),2);
-		MainNode mainNode3 = new MainNode("G2", "Goal Node", NodeType.GOAL, new Point(0,2),3);
-		MainNode mainNode4 = new MainNode("G1", "GoalNode", NodeType.GOAL, new Point(0,3),4);
-		MainNode mainNode5 = new MainNode("G1", "Goal Node", NodeType.STRATEGY, new Point(0,4),5);
+		MainNode mainNode1 = new MainNode("G1", "Goal Node", NodeType.GOAL, new Point(0,0));
+		MainNode mainNode2 = new MainNode("G1", "Goal Node", NodeType.GOAL, new Point(0,1));
+		MainNode mainNode3 = new MainNode("G2", "Goal Node", NodeType.GOAL, new Point(0,2));
+		MainNode mainNode4 = new MainNode("G1", "GoalNode", NodeType.GOAL, new Point(0,3));
+		MainNode mainNode5 = new MainNode("G1", "Goal Node", NodeType.STRATEGY, new Point(0,4));
 		
 		//mainNode1 and mainNode2 are equal
 		assert(mainNode1.equals(mainNode2));
@@ -36,7 +36,7 @@ public class NodeTest {
 		
 		//Exceptions should be thrown for both
 		try {
-			new MainNode("G1", "Goal Node", NodeType.ASSUMPTION, new Point(0,0),1);
+			new MainNode("G1", "Goal Node", NodeType.ASSUMPTION, new Point(0,0));
 			assert(false);
 		}
 		catch (IllegalArgumentException e) {
@@ -45,7 +45,7 @@ public class NodeTest {
 		
 		//Exceptions should be thrown for both
 		try {
-			new SupportingNode("s1", "Support Node", NodeType.GOAL, new Point(0,0),1);
+			new SupportingNode("s1", "Support Node", NodeType.GOAL, new Point(0,0));
 			assert(false);
 		}
 		catch (IllegalArgumentException e) {
