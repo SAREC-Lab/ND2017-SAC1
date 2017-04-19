@@ -1,3 +1,4 @@
+package MVC;
 import java.awt.Point;
 import java.util.ArrayList;
 
@@ -101,9 +102,6 @@ public class Controller{
 		}
 		
 		if (validateConnection(start, end, ct)) {
-			MainNode main_node = (MainNode) start;
-			main_node.addChild(end);
-			end.addParent(main_node);
 			Connection connection = new Connection(start, end, ct);
 			manager.addConnection(connection);
 			view.drawConnection(connection);

@@ -1,3 +1,4 @@
+package MVC;
 import SAC.SAC;
 
 import java.util.ArrayList;
@@ -13,6 +14,14 @@ public class NodeManager {
 	private ArrayList<Connection> connections = new ArrayList<Connection>();
 	
 	public NodeManager() {
+	}
+	
+	public ArrayList<Node> getNodes() {
+		return nodes;
+	}
+	
+	public ArrayList<Connection> getConnections() {
+		return connections;
 	}
 	
 	public void addNode(Node n) {
@@ -54,6 +63,9 @@ public class NodeManager {
 	
 	public void addConnection(Connection r) {
 		connections.add(r);
+		MainNode main_node = (MainNode) r.getStart();
+		main_node.addChild(r.getEnd());
+		r.getEnd().addParent(main_node);
 	}
 	
 	public ArrayList<Connection> getNodeConnections(Node n) {
