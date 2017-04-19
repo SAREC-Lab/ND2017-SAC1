@@ -13,7 +13,7 @@ public class EllipseStrategy implements NodeDrawingStrategy {
 	@Override
 	public NodePane drawNode(Node node, Color outline, Color fill) {
 		
-		Rectangle rect = new Rectangle(0, 0, 100, 50);
+		Rectangle rect = new Rectangle(0, 0, 100, 60);
 		
 		// Hard coded for now
 		rect.setStroke(outline);
@@ -29,6 +29,7 @@ public class EllipseStrategy implements NodeDrawingStrategy {
 		description.setFont(new Font(8));
 		//description.setBoundsType(TextBoundsType.VISUAL);
 		description.setFill(Color.GRAY);
+		description.setWrappingWidth(70);
 		
 		VBox vBox = new VBox();
 		vBox.getChildren().addAll(text, description);

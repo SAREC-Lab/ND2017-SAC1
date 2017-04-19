@@ -1,5 +1,4 @@
 import SAC.SAC;
-import javafx.scene.shape.Line;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -149,7 +148,6 @@ public class NodeManager {
 			end.addParent(start);
 			nodeSet.add(start);
 			nodeSet.add(end);
-			c.setLine(new Line(c.getStartx(),c.getStarty(),c.getEndx(),c.getEndy()));
 		}
 		nodes.addAll(nodeSet);
 	}

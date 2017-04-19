@@ -1,16 +1,17 @@
 package Node;
 
-import javafx.scene.shape.Line;
+import javafx.scene.Group;
 
 public class Connection {
 
-	private transient Line line;
+	private transient Group arrow;
 	private Node start;
 	private Node end;
-	private double startx, starty, endx, endy;
+	private boolean filled;
 	
 	public Connection() {
 	}
+
 	
 	public Connection(Node s, Node e) {
 		start = s;
@@ -25,16 +26,12 @@ public class Connection {
 		end = e;
 	}
 	
-	public Line getLine() {
-		return line;
+	public Group getArrow() {
+		return arrow;
 	}
 	
-	public void setLine(Line l) {
-		line = l;
-		startx = line.getStartX();
-		starty = line.getStartY();
-		endx = line.getEndX();
-		endy = line.getEndY();
+	public void setArrow(Group a) {
+		arrow = a;
 	}
 	
 	public Node getStart() {
@@ -45,35 +42,12 @@ public class Connection {
 		return end;
 	}
 
-	public double getStartx() {
-		return startx;
+	public boolean isFilled() {
+		return filled;
 	}
 
-	public void setStartx(double startx) {
-		this.startx = startx;
-	}
 
-	public double getStarty() {
-		return starty;
-	}
-
-	public void setStarty(double starty) {
-		this.starty = starty;
-	}
-
-	public double getEndx() {
-		return endx;
-	}
-
-	public void setEndx(double endx) {
-		this.endx = endx;
-	}
-
-	public double getEndy() {
-		return endy;
-	}
-
-	public void setEndy(double endy) {
-		this.endy = endy;
+	public void setFilled(boolean filled) {
+		this.filled = filled;
 	}
 }

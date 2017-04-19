@@ -5,11 +5,28 @@ import javafx.scene.shape.Line;
 
 public class ConnectionDrawer {
 	
-	public Line drawConnection(Node start, Node end) {
+	public Arrow drawConnection(Node start, Node end, boolean filled) {
+		Arrow arrow = new Arrow(start.getCoordinates(), end.getCoordinates(), filled);
+
+		optimizeConnectionPlacement(arrow, start, end);
+		
+		return arrow;
+	}
+	
+	public void optimizeConnectionPlacement(Arrow arrow, Node start, Node end) {
+		Line line = arrow.getArrowLine();
+		
+		// Difference in node coordinates
 		double xDiff = start.getCoordinates().getX() - end.getCoordinates().getX();
 		double yDiff = start.getCoordinates().getY() - end.getCoordinates().getY();
-		Line line = new Line();
 		
+		// Unbind previous connection points
+		line.startXProperty().unbind();
+		line.startYProperty().unbind();
+		line.endXProperty().unbind();
+		line.endYProperty().unbind();
+		
+		// Choose point of connection based on coordinates diffs
 		if (Math.abs(xDiff) > Math.abs(yDiff)) {
 			// Start is on left of end
 			if (xDiff < 0) {
@@ -40,7 +57,5 @@ public class ConnectionDrawer {
 				line.endYProperty().bind(end.getPane().getBottomConnectorPropertyY());
 			}
 		}
-
-		return line;
 	}
 }
