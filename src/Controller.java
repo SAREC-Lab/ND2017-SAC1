@@ -67,13 +67,13 @@ public class Controller{
 		}
 
 		//check if they are already connected
-		if (end.isChildOf(start)) {
-			view.alert("The child node cannot already be a child of the parent node.");
+		if (end.isParentOf(start)) {
+			view.alert("The selected child node cannot already be a parent of the other node.");
 			return false;
 		}
 		
-		if (start.isChildOf(end)) {
-			view.alert("The parent node cannot already be a parent of the child node.");
+		if (start.isParentOf(end)) {
+			view.alert("The selected parent node cannot already be a parent of the child node.");
 			return false;
 		}
 
