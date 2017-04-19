@@ -1,11 +1,16 @@
 import java.awt.Point;
 import java.util.ArrayList;
 
+import Drawing.CircleStrategy;
 import Drawing.Arrow;
 import Drawing.ConnectionDrawer;
+import Drawing.EllipseStrategy;
 import Drawing.NodeDrawer;
 import Drawing.NodePane;
+import Drawing.ParallelogramStrategy;
+import Drawing.RectangleStrategy;
 import Node.Connection;
+
 import Node.Node;
 import Node.NodeType;
 import javafx.beans.value.ChangeListener;
@@ -44,6 +49,7 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
+import Node.NodeType;
 
 
 public class View {
@@ -433,7 +439,7 @@ public class View {
 					public void handle(KeyEvent event) {
 						node.setDescription(description.getText());
 						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(1)).setText(description.getText());
-						nodeDrawer.redraw(node);
+						resize(node, shape);
 					}
 				});
 				deleteBtn.setOnAction(new EventHandler<ActionEvent>()
@@ -474,6 +480,60 @@ public class View {
 				node.getCoordinates().setLocation((int) screenBounds.getMinX(), (int) screenBounds.getMinY());
 			}
 		});
+	}
+	
+	public void resize(Node node, NodePane shape){
+		Text t = ((Text)((VBox)shape.getChildren().get(1)).getChildren().get(1));
+		Text description = new Text(node.getDescription());
+		int length = new Integer(description.getText().length());
+		int r = new Integer(1);
+		int m = new Integer(1);
+		switch (node.getNodeType()) {
+		case GOAL:
+		case STRATEGY:
+			//System.out.println(description.getText().length());
+			r = (length-45)%34;
+			m = (length-45)/34;
+			if(r==0){
+				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
+				shape.getChildren().get(0).setScaleY(1.2 + m*0.2);
+				t.setWrappingWidth(t.getWrappingWidth() + 20);
+			}
+			break;
+		case CONTEXT:	//rounded rectangle
+			//System.out.println(description.getText().length());
+			r = (length-40)%32;
+			m = (length-40)/32;
+			System.out.println("m:" + m);
+			System.out.println("r:" + r);
+			if(r==0){
+				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
+				shape.getChildren().get(0).setScaleY(1.2 + m*0.3);
+				t.setWrappingWidth(t.getWrappingWidth() + 10);
+			}
+			break;
+		case SOLUTION:	//circle
+			System.out.println(description.getText().length());
+			r = (length-45)%34;
+			m = (length-45)/34;
+			if(r==0){
+				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
+				shape.getChildren().get(0).setScaleY(1.2 + m*0.2);
+				t.setWrappingWidth(t.getWrappingWidth() + 10);
+			}
+			break;
+		case JUSTIFICATION:
+		case ASSUMPTION:
+			//System.out.println(description.getText().length());
+			r = (length-45)%34;
+			m = (length-45)/34;
+			if(r==0){
+				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
+				shape.getChildren().get(0).setScaleY(1.2 + m*0.2);
+				t.setWrappingWidth(t.getWrappingWidth() + 10);
+			}
+			break;
+		}
 	}
 	
 	// Draw connection between two nodes (called in event handlers)
