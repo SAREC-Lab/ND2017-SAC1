@@ -1,14 +1,10 @@
 import java.awt.Point;
 import java.util.ArrayList;
 
-import Drawing.CircleStrategy;
 import Drawing.Arrow;
 import Drawing.ConnectionDrawer;
-import Drawing.EllipseStrategy;
 import Drawing.NodeDrawer;
 import Drawing.NodePane;
-import Drawing.ParallelogramStrategy;
-import Drawing.RectangleStrategy;
 import Node.Connection;
 
 import Node.Node;
@@ -49,7 +45,6 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
-import Node.NodeType;
 
 
 public class View {
@@ -577,16 +572,18 @@ public class View {
 			}
 		});
 		
-		// If either node ever moves, update arrowhead on connection to match
+		// If either node ever moves, update arrowhead and connection to match
 		connection.getStart().getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
 			@Override 
 			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+				connectionDrawer.optimizeConnectionPlacement(arrowObject, connection.getStart(), connection.getEnd());
 				arrowObject.updateArrowheadLocation();
 			}
 		});
 		connection.getEnd().getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
 			@Override 
 			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+				connectionDrawer.optimizeConnectionPlacement(arrowObject, connection.getStart(), connection.getEnd());
 				arrowObject.updateArrowheadLocation();
 			}
 		});
