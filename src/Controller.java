@@ -2,6 +2,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import Node.Connection;
+import Node.ConnectionType;
 import Node.MainNode;
 import Node.Node;
 import Node.NodeType;
@@ -41,13 +42,28 @@ public class Controller{
 		manager.removeNode(n);
 	}
 
-	private boolean validateConnection(Node start, Node end) {
-		//TODO: more complicated validation
+	private boolean validateConnection(Node start, Node end, ConnectionType ct) {
+		if (start == end) {
+			return false;
+		}
+
+		//start node must be of MainNode class
 		if (start.getClass() != MainNode.class) {
 			return false;
 		}
 
-		if (start == end) {
+		//filled arrow must point to a MainNode
+		if (end.getClass() == MainNode.class && ct != ConnectionType.CONTEXTUAL) {
+			return false;
+		}
+
+		//unfilled arrow must point to SupportingNode
+		if (end.getClass() == SupportingNode.class && ct != ConnectionType.SUPPORTING) {
+			return false;
+		}
+
+		//check if they are already connected
+		if (end.isParentOf(start) || start.isParentOf(end)) {
 			return false;
 		}
 
@@ -64,12 +80,21 @@ public class Controller{
 		return arrows;
 	}
 
-	public void createConnection(Node start, Node end) {
-		if (validateConnection(start, end)) {
+	public void createConnection(Node start, Node end, boolean filled) {
+		//determine ConnectionType using filled
+		ConnectionType ct;
+		
+		if (filled) {
+			ct = ConnectionType.CONTEXTUAL;
+		} else {
+			ct = ConnectionType.SUPPORTING;
+		}
+		
+		if (validateConnection(start, end, ct)) {
 			MainNode main_node = (MainNode) start;
 			main_node.addChild(end);
 			end.addParent(main_node);
-			Connection connection = new Connection(start, end);
+			Connection connection = new Connection(start, end, ct);
 			manager.addConnection(connection);
 			view.drawConnection(connection);
 		}

@@ -6,10 +6,12 @@ public class Connection {
 	Group arrow;
 	Node start;
 	Node end;
+	ConnectionType connectionType;
 	
-	public Connection(Node s, Node e) {
+	public Connection(Node s, Node e, ConnectionType c) {
 		start = s;
 		end = e;
+		connectionType = c;
 	}
 	
 	public Group getArrow() {
@@ -26,5 +28,9 @@ public class Connection {
 	
 	public Node getEnd() {
 		return end;
+	}
+	
+	public ConnectionType getConnectionType() {
+		return connectionType;
 	}
 }
