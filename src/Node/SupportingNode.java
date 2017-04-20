@@ -12,9 +12,8 @@ public class SupportingNode extends Node {
 		
 	}
 	
-	public SupportingNode(String n, String d, NodeType nt, Point c) {
-		super(n, d, nt, c);
-		this.setType("Node.SupportingNode");
+	public SupportingNode(String n, String d, NodeType nt, Point c, int id) {
+		super(n, d, nt, c, id);
 		
 		if (!allowableNodeTypes.contains(nt)) {
 			throw new IllegalArgumentException("NodeType " + nt.toString() + " not an allowable type for SupportingNode.");

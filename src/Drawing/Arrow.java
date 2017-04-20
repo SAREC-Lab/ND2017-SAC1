@@ -59,4 +59,22 @@ public class Arrow {
         double angle = Math.toDegrees(Math.atan2(yDiff, xDiff)) + 90;
 		arrowhead.getTransforms().add(new Rotate(angle, arrowhead.getPoints().get(0), arrowhead.getPoints().get(1)));
 	}
+	@Override
+	public boolean equals(Object other) {
+		if (other == this) {
+			return true;
+		}
+		
+		if (other == null) {
+			return false;
+		}
+		
+		if (other.getClass() != getClass()) {
+			return false;
+		}
+		
+		Arrow arrow = (Arrow)other;
+		
+		return (this.getArrow()==arrow.getArrow() && this.getArrowLine() == arrow.getArrowLine());
+	}
 }

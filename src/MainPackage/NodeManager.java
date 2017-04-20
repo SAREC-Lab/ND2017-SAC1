@@ -1,10 +1,10 @@
+package MainPackage;
 import SAC.SAC;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import Node.Node;
 import Node.NodeDeserializer;
 import com.google.gson.Gson;
@@ -12,7 +12,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import java.util.Iterator;
-import java.util.Set;
 import Node.Connection;
 import Node.MainNode;
 
@@ -123,7 +122,6 @@ public class NodeManager {
 		// clear nodes and connections from model
 		connections.clear();
 		nodes.clear();
-		Set<Node> nodeSet = new HashSet<Node>(); // make set so no duplicate nodes are added 
 		
 		// start and end nodes
 		MainNode start;
@@ -141,11 +139,23 @@ public class NodeManager {
 			// add parents and children
 			start.addChild(end);
 			end.addParent(start);
-			nodeSet.add(start);
-			nodeSet.add(end);
+			if (!nodes.contains(start)) {
+				nodes.add(start);
+			}
+			if (!nodes.contains(end)) {
+				nodes.add(end);
+			}
+			c.setStart(getNodeByID(start.getId()));
+			c.setEnd(getNodeByID(end.getId()));
 		}
-		// add nodes to node list from hash
-		nodes.addAll(nodeSet);
-		System.out.println(nodes.size());
+	}
+
+	private Node getNodeByID(int id) {
+		for(Node n: nodes) {
+			if(n.getId() == id) {
+				return n;
+			}
+		}
+		return null;
 	}
 }

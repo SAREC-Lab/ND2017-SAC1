@@ -12,16 +12,17 @@ public abstract class Node {
 	Point coordinates;
 	private Color outline;
 	private Color fill;
+	private int id;
 	private transient NodePane pane;
-	private String type;
 	private transient ArrayList<MainNode> parents = new ArrayList<MainNode>();
 	
 	public Node() {
 	}
 	
-	public Node(String n, String d, NodeType nt, Point c) {
+	public Node(String n, String d, NodeType nt, Point c, int id) {
 		name = n;
 		description = d;
+		this.id = id;
 		nodeType = nt;
 		coordinates = c;
 		fill = Color.WHITE;
@@ -103,9 +104,7 @@ public abstract class Node {
 	@Override
 	public int hashCode() {
 		return 31 
-				* (7 + getName().hashCode()) 
-				* (11 + getDescription().hashCode()) 
-				* (41 + getNodeType().hashCode());
+				* (7 + getId());
 	}
 	
 	@Override
@@ -124,16 +123,14 @@ public abstract class Node {
 		
 		Node node = (Node)other;
 		
-		return (getName() == node.getName()
-				&& getDescription() == node.getDescription()
-				&& getNodeType() == node.getNodeType());
+		return (getId() == node.getId());
 	}
 
-	public String getType() {
-		return type;
+	public int getId() {
+		return id;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setId(int id) {
+		this.id = id;
 	}
 }
