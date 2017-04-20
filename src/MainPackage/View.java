@@ -1,4 +1,7 @@
+package MainPackage;
 import java.awt.Point;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import Drawing.Arrow;
 import Drawing.ConnectionDrawer;
@@ -42,6 +45,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 
@@ -57,6 +61,7 @@ public class View {
 	private ToggleGroup toolGroup;
 	private ColorPicker outlinePicker, fillPicker;
 	private Button deleteBtn;
+	private Button addRootBtn;
 	private TextArea description;
 	private TextField title;
 	private Controller controller;
@@ -68,11 +73,64 @@ public class View {
 
 		ToolBar leftBar = new ToolBar();
 		leftBar = createToolBox();
+		FileChooser fileChooser = new FileChooser();
 
 		Button newBtn = new Button("New");
 		Button importBtn = new Button("Import");
 		Button exportBtn = new Button("Export");
 		Button saveBtn = new Button("Save");
+
+		exportBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				fileChooser.setTitle("Save File");
+				File file = fileChooser.showSaveDialog(windowStage);
+				try {
+					if (file != null) {
+						controller.traverse(false,file);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		});
+		saveBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				fileChooser.setTitle("Save File");
+				File file = fileChooser.showSaveDialog(windowStage);
+				try {
+					if (file != null) {
+						controller.traverse(true,file);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		});
+		importBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				fileChooser.setTitle("Save File");
+				File file = fileChooser.showOpenDialog(windowStage);
+				try {
+					if (file != null) {
+						controller.load(file);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		});
 
 		ToolBar topBar = new ToolBar();
 		topBar.prefWidthProperty().bind(windowStage.widthProperty());
@@ -273,9 +331,14 @@ public class View {
 		deleteBtn = new Button("Delete");
 		deleteBtn.setMaxWidth(200);
 
+		addRootBtn = new Button("Add Root");
+		addRootBtn.setMaxWidth(200);
+
 		deleteBtn.setVisible(false);
 		title.setVisible(false);
 		description.setVisible(false);
+		addRootBtn.setVisible(false);
+
 
 		//add items to toolbar
 		ToolBar leftBar = new ToolBar();
@@ -297,7 +360,9 @@ public class View {
 				new Separator(),
 				title,
 				description,
-				deleteBtn);
+				deleteBtn,
+				addRootBtn);
+
 		return leftBar;
 
 	}
@@ -364,7 +429,9 @@ public class View {
 
 	// Deselect toggled node
 	public void deselectToggledNode() {
-		toolGroup.getSelectedToggle().setSelected(false);
+		if (toolGroup.getSelectedToggle() != null) {
+			toolGroup.getSelectedToggle().setSelected(false);
+		}
 	}
 
 	// Set nodedrawer strategy and draw node adding it to pane
@@ -376,18 +443,18 @@ public class View {
 
 		// If the node ever moves, update connection properties to match
 		node.getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
-            @Override 
-            public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
-                node.getPane().updateNodeProperties();
-            }
-        });
+			@Override 
+			public void changed(ObservableValue<? extends Transform> ov, Transform ob, Transform nb) {
+				node.getPane().updateNodeProperties();
+			}
+		});
 	}
 
 	// Add clicking and dragging event handlers to nodes
 	private void addEventHandlersToNode(Node node) {
 		final Point originalTranslation = new Point();
 		NodePane shape = node.getPane();
-		
+
 		shape.setOnMousePressed(new EventHandler<MouseEvent>()
 		{
 			@Override
@@ -412,6 +479,7 @@ public class View {
 				}
 
 				selectedNode = node;
+				addRootBtn.setVisible(false);
 				deleteBtn.setVisible(true);
 				title.setVisible(true);
 				description.setVisible(true);
@@ -434,9 +502,9 @@ public class View {
 						Boolean delete = new Boolean(false);
 						node.setDescription(description.getText());
 						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(1)).setText(description.getText());
-					    if (event.getCode().equals(KeyCode.BACK_SPACE)) {
-					        delete = true;
-					    }
+						if (event.getCode().equals(KeyCode.BACK_SPACE)) {
+							delete = true;
+						}
 						resize(node, shape, delete);
 					}
 				});
@@ -456,6 +524,16 @@ public class View {
 					}
 
 				});
+				if(node.getNodeType() == NodeType.GOAL){
+					addRootBtn.setVisible(true);
+					addRootBtn.setOnAction(new EventHandler <ActionEvent>()
+					{
+						@Override
+						public void handle(ActionEvent event){
+							controller.addRoot(node);
+						}
+					});
+				}
 			}
 		});
 
@@ -479,7 +557,7 @@ public class View {
 			}
 		});
 	}
-	
+
 	public void resize(Node node, NodePane shape, Boolean delete){
 		Text t = ((Text)((VBox)shape.getChildren().get(1)).getChildren().get(1));
 		Text description = new Text(node.getDescription());
@@ -547,15 +625,18 @@ public class View {
 			break;
 		}
 	}
-	
+
 	// Draw connection between two nodes (called in event handlers)
 	public void drawConnection(Connection connection) {
-		Arrow arrow = connectionDrawer.drawConnection(connection.getStart(), connection.getEnd(), (boolean) toolGroup.getSelectedToggle().getUserData());
+		if (toolGroup.getSelectedToggle() != null) {
+			connection.setFilled( (boolean) toolGroup.getSelectedToggle().getUserData());
+		}
+		Arrow arrow = connectionDrawer.drawConnection(connection.getStart(), connection.getEnd(), connection.isFilled());
 		connection.setArrow(arrow.getArrow());
-		
+
 		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().add(arrow.getArrow());
 		addEventHandlersToConnection(connection, arrow);
-		
+
 		connection.getStart().getPane().updateNodeProperties();
 		connection.getEnd().getPane().updateNodeProperties();
 		arrow.updateArrowheadLocation();
@@ -566,7 +647,7 @@ public class View {
 
 	private void addEventHandlersToConnection(Connection connection, Arrow arrowObject) {
 		Group arrow = connection.getArrow();
-		
+
 		arrow.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
 			@Override
@@ -574,7 +655,7 @@ public class View {
 				deleteBtn.setVisible(true);
 				title.setVisible(false);
 				description.setVisible(false);
-				
+
 				deleteBtn.setOnAction(new EventHandler<ActionEvent>()
 				{
 					@Override
@@ -588,7 +669,7 @@ public class View {
 				});
 			}
 		});
-		
+
 		// If either node ever moves, update arrowhead and connection to match
 		connection.getStart().getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
 			@Override 
@@ -604,5 +685,9 @@ public class View {
 				arrowObject.updateArrowheadLocation();
 			}
 		});
+	}
+
+	public void clearView() {
+		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().clear();
 	}
 }
