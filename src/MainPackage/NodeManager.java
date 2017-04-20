@@ -20,18 +20,18 @@ public class NodeManager {
 	private ArrayList<Node> nodes = new ArrayList<Node>();
 	private ArrayList<Connection> connections = new ArrayList<Connection>();
 	private Gson gson;
-	
+
 	public NodeManager() {
 		GsonBuilder gsonBuilder = new GsonBuilder();
-	    gsonBuilder.registerTypeAdapter(Node.class, new NodeDeserializer<Node>());
-	    gsonBuilder.setPrettyPrinting();
+		gsonBuilder.registerTypeAdapter(Node.class, new NodeDeserializer<Node>());
+		gsonBuilder.setPrettyPrinting();
 		gson = gsonBuilder.create();
 	}
-	
+
 	public void addNode(Node n) {
 		nodes.add(n);
 	}
-	
+
 	public void removeNode(Node n) {
 		Iterator<Connection> connection_it = connections.iterator();
 		while(connection_it.hasNext()) {
@@ -40,7 +40,7 @@ public class NodeManager {
 				connection_it.remove();
 			}
 		}
-		
+
 		Iterator<MainNode> parent_it = n.getParents().iterator();
 		while (parent_it.hasNext()) {
 			Node parent = parent_it.next();
@@ -48,7 +48,7 @@ public class NodeManager {
 				((MainNode) parent).getChildren().remove(n);
 			}
 		}
-		
+
 		if (n.getClass() == MainNode.class) {
 			MainNode main_node = (MainNode) n;
 			Iterator<Node> child_it = main_node.getChildren().iterator();
@@ -57,18 +57,18 @@ public class NodeManager {
 				child.getParents().remove(main_node);
 			}
 		}
-		
+
 		nodes.remove(n);
 	}
-	
+
 	public void setSACRootNode(Node n) {
 		sac.setRootNode(n);
 	}
-	
+
 	public ArrayList<Connection> getConnections() {
 		return connections;
 	}
-	
+
 	public ArrayList<Node> getNodes() {
 		return nodes;
 	}
@@ -76,17 +76,17 @@ public class NodeManager {
 	public void traverse(boolean b, File file) throws IOException {
 		// convert connections list to JSON string
 		String str = gson.toJson(connections);
-		
+
 		// write string to file
 		FileWriter writer = new FileWriter(file);
 		writer.write(str);
 		writer.close();
 	}
-	
+
 	public void addConnection(Connection r) {
 		connections.add(r);
 	}
-	
+
 	public ArrayList<Connection> getNodeConnections(Node n) {
 		ArrayList<Connection> conns = new ArrayList<Connection>();
 		for (Connection c : connections) {
@@ -96,7 +96,7 @@ public class NodeManager {
 		}
 		return conns;
 	}
-	
+
 	public void printNodes() {
 		System.out.println("TOTAL NODES: " + nodes.size());
 		System.out.println("TOTAL CONNECTIONS:" + connections.size());
@@ -117,20 +117,20 @@ public class NodeManager {
 			main_node.removeChild(connection.getEnd());
 		}
 	}
-	
+
 	public void load(File file) throws IOException {
 		// clear nodes and connections from model
 		connections.clear();
 		nodes.clear();
-		
+
 		// start and end nodes
 		MainNode start;
 		Node end;
-		
+
 		// JSON Reader
 		JsonReader reader = new JsonReader(new FileReader(file));
 		connections = gson.fromJson(reader, new TypeToken<ArrayList<Connection>>(){}.getType());
-		
+
 		// iterate through connections in JSON
 		// adding nodes to hash and adding connections to list
 		for (Connection c: connections) {
