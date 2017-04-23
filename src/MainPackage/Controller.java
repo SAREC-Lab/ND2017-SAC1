@@ -1,5 +1,7 @@
-package MVC;
+package MainPackage;
 import java.awt.Point;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import Node.Connection;
@@ -14,6 +16,7 @@ public class Controller{
 
 	View view;
 	NodeManager manager = new NodeManager();
+	private int node_id = 0;
 
 	public Controller(View v) {
 		this.view = v;
@@ -21,29 +24,40 @@ public class Controller{
 
 	public void createNode(Point clickLocation) {
 		NodeType type = view.getSelectedNodeType();
-		if (type == null)
+		if (type == null) {
 			return;
+		}
+		
+		node_id++;
 
 		Node newNode;
 
 		Point nodeLocation = new Point((int) clickLocation.getX(), (int) clickLocation.getY());
 
 		if (type == NodeType.GOAL || type == NodeType.STRATEGY || type == NodeType.SOLUTION) {
-			newNode = new MainNode(type.toString(), "description", view.getSelectedNodeType(), nodeLocation);
+			newNode = new MainNode(type.toString(), "description", view.getSelectedNodeType(), nodeLocation,node_id);
 		} else {
-			newNode = new SupportingNode(type.toString(), "description", view.getSelectedNodeType(), nodeLocation);
+			newNode = new SupportingNode(type.toString(), "description", view.getSelectedNodeType(), nodeLocation,node_id);
 		}
 		view.drawNode(newNode);
 		view.deselectToggledNode();
 
 		manager.addNode(newNode);
 	}
+	
+	public void addRoot(Node n) {
+		manager.setSACRootNode(n);
+	}
 
 	public void removeNode(Node n) {
 		manager.removeNode(n);
 	}
 
-	private boolean validateConnection(Node start, Node end, ConnectionType ct) {
+	public void traverse(boolean b, File file) throws IOException {
+		manager.traverse(b,file);
+	}
+	
+	private boolean validateConnection(Node start, Node end, boolean filled) {
 		if (start == end) {
 			view.alert("A node cannot be connected to itself.");
 			return false;
@@ -56,13 +70,13 @@ public class Controller{
 		}
 
 		//filled arrow must point to a MainNode
-		if (end.getClass() == MainNode.class && ct != ConnectionType.CONTEXTUAL) {
+		if (end.getClass() == MainNode.class && !filled) {
 			view.alert("This relationship is contextual and must used a filled-in arrow.");
 			return false;
 		}
 
 		//unfilled arrow must point to SupportingNode
-		if (end.getClass() == SupportingNode.class && ct != ConnectionType.SUPPORTING) {
+		if (end.getClass() == SupportingNode.class && filled) {
 			view.alert("This relationship is supporting and must used an empty arrow.");
 			return false;
 		}
@@ -92,17 +106,8 @@ public class Controller{
 	}
 
 	public void createConnection(Node start, Node end, boolean filled) {
-		//determine ConnectionType using filled
-		ConnectionType ct;
-		
-		if (filled) {
-			ct = ConnectionType.CONTEXTUAL;
-		} else {
-			ct = ConnectionType.SUPPORTING;
-		}
-		
-		if (validateConnection(start, end, ct)) {
-			Connection connection = new Connection(start, end, ct);
+		if (validateConnection(start, end, filled)) {
+			Connection connection = new Connection(start, end, filled);
 			manager.addConnection(connection);
 			view.drawConnection(connection);
 		}
@@ -110,5 +115,19 @@ public class Controller{
 
 	public void removeConnection(Connection connection) {
 		manager.removeConnection(connection);	
+	}
+
+	public void load(File file) throws IOException {
+		manager.load(file);
+		view.clearView();
+		ArrayList<Connection> connections = manager.getConnections();
+		ArrayList<Node> nodes = manager.getNodes();
+		for (Node n: nodes) {
+			view.drawNode(n);
+		}
+		for (Connection c: connections) {
+			view.drawConnection(c);
+		}
+		
 	}
 }
