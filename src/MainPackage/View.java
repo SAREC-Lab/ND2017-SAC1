@@ -632,9 +632,6 @@ public class View {
 
 	// Draw connection between two nodes (called in event handlers)
 	public void drawConnection(Connection connection) {
-		/*if (toolGroup.getSelectedToggle() != null) {
-			connection.setFilled( (boolean) toolGroup.getSelectedToggle().getUserData());
-		}*/
 		Arrow arrow = connectionDrawer.drawConnection(connection.getStart(), connection.getEnd(), connection.isFilled());
 		connection.setArrow(arrow.getArrow());
 
