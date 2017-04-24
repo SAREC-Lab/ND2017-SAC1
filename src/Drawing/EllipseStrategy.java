@@ -43,10 +43,4 @@ public class EllipseStrategy implements NodeDrawingStrategy {
 		return stack;
 	}
 
-	@Override
-	public NodePane redraw(Node node, Color outline, Color fill) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
