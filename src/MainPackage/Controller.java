@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import Node.Connection;
-import Node.ConnectionType;
 import Node.MainNode;
 import Node.Node;
 import Node.NodeType;
