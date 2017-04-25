@@ -85,6 +85,9 @@ public class NodeManager {
 
 	public void addConnection(Connection r) {
 		connections.add(r);
+		MainNode main_node = (MainNode) r.getStart();
+		main_node.addChild(r.getEnd());
+		r.getEnd().addParent(main_node);
 	}
 
 	public ArrayList<Connection> getNodeConnections(Node n) {

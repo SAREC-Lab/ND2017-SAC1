@@ -19,7 +19,9 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
@@ -30,6 +32,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -475,7 +478,8 @@ public class View {
 
 				// Handle making connection if in progress
 				if (makingConnection && selectedNode != null) {
-					controller.createConnection(selectedNode, node);
+					boolean filled = (boolean) toolGroup.getSelectedToggle().getUserData();
+					controller.createConnection(selectedNode, node, filled);
 				}
 
 				selectedNode = node;
@@ -628,9 +632,6 @@ public class View {
 
 	// Draw connection between two nodes (called in event handlers)
 	public void drawConnection(Connection connection) {
-		if (toolGroup.getSelectedToggle() != null) {
-			connection.setFilled( (boolean) toolGroup.getSelectedToggle().getUserData());
-		}
 		Arrow arrow = connectionDrawer.drawConnection(connection.getStart(), connection.getEnd(), connection.isFilled());
 		connection.setArrow(arrow.getArrow());
 
@@ -689,5 +690,10 @@ public class View {
 
 	public void clearView() {
 		((Pane)((ScrollPane)tabPane.getSelectionModel().getSelectedItem().getContent()).getContent()).getChildren().clear();
+	}
+	
+	public void alert(String message) {
+		Alert a = new Alert(AlertType.INFORMATION, message, ButtonType.OK);
+		a.showAndWait();
 	}
 }

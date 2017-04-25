@@ -2,6 +2,7 @@ package Node;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import Drawing.NodePane;
 import javafx.scene.paint.Color;
 
@@ -100,7 +101,36 @@ public abstract class Node {
 	public ArrayList<MainNode> getParents() {
 		return parents;
 	}
+	
+	public boolean isParentOf(Node node) {
 
+		//tree traversal
+		LinkedList<Node> frontier = new LinkedList<Node>();
+
+		frontier.push(this);
+
+		while (frontier.size() > 0) {
+			Node popped_node = frontier.pop();
+
+			//if popped_node is equal to node, then this is the parent of the node
+			if (popped_node == node) {
+				return true;
+			}
+
+			//add children of popped_node to frontier
+			if (popped_node.getClass() == MainNode.class) {
+				MainNode main_node = (MainNode) popped_node;
+
+				for (Node child : main_node.getChildren()) {
+					frontier.push(child);
+				}
+			}
+		}
+
+		//if node has not been found, then it is not a child of this
+		return false;
+	}
+	
 	@Override
 	public int hashCode() {
 		return 31 

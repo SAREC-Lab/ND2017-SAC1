@@ -3,7 +3,7 @@ package Node;
 import javafx.scene.Group;
 
 public class Connection {
-
+	
 	private transient Group arrow;
 	private Node start;
 	private Node end;
@@ -11,11 +11,11 @@ public class Connection {
 
 	public Connection() {
 	}
-
-
-	public Connection(Node s, Node e) {
+	
+	public Connection(Node s, Node e, boolean f) {
 		start = s;
 		end = e;
+		filled = f;
 	}
 
 	public void setStart(Node s) {
