@@ -22,11 +22,12 @@ public class Controller{
 	}
 
 	public void createNode(Point clickLocation) {
-		node_id++;
-		System.out.println(node_id);
 		NodeType type = view.getSelectedNodeType();
-		if (type == null)
+		if (type == null) {
 			return;
+		}
+		
+		node_id++;
 
 		Node newNode;
 
@@ -55,13 +56,38 @@ public class Controller{
 		manager.traverse(b,file);
 	}
 	
-	private boolean validateConnection(Node start, Node end) {
-		//TODO: more complicated validation
-		if (start.getClass() != MainNode.class) {
+	private boolean validateConnection(Node start, Node end, boolean filled) {
+		if (start == end) {
+			view.alert("A node cannot be connected to itself.");
 			return false;
 		}
 
-		if (start == end) {
+		//start node must be of MainNode class
+		if (start.getClass() != MainNode.class) {
+			view.alert("A parent node must be GOAL, STRATEGY, or SOLUTION");
+			return false;
+		}
+
+		//filled arrow must point to a MainNode
+		if (end.getClass() == MainNode.class && !filled) {
+			view.alert("This relationship is contextual and must used a filled-in arrow.");
+			return false;
+		}
+
+		//unfilled arrow must point to SupportingNode
+		if (end.getClass() == SupportingNode.class && filled) {
+			view.alert("This relationship is supporting and must used an empty arrow.");
+			return false;
+		}
+
+		//check if they are already connected
+		if (end.isParentOf(start)) {
+			view.alert("The selected child node cannot already be a parent of the other node.");
+			return false;
+		}
+		
+		if (start.isParentOf(end)) {
+			view.alert("The selected parent node cannot already be a parent of the child node.");
 			return false;
 		}
 
@@ -78,12 +104,9 @@ public class Controller{
 		return arrows;
 	}
 
-	public void createConnection(Node start, Node end) {
-		if (validateConnection(start, end)) {
-			MainNode main_node = (MainNode) start;
-			main_node.addChild(end);
-			end.addParent(main_node);
-			Connection connection = new Connection(start, end);
+	public void createConnection(Node start, Node end, boolean filled) {
+		if (validateConnection(start, end, filled)) {
+			Connection connection = new Connection(start, end, filled);
 			manager.addConnection(connection);
 			view.drawConnection(connection);
 		}
