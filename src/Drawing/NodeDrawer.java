@@ -45,12 +45,17 @@ public class NodeDrawer {
 		switch (node.getNodeType()) {
 		case GOAL:
 		case STRATEGY:
-			//System.out.println(description.getText().length());
+			
+			if(t.getWrappingWidth() < 70){
+				t.setWrappingWidth(70);
+			}
+			
 			r = (length-45)%34;
 			m = (length-45)/34;
 			if(r==0 && delete == false){
 				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
 				shape.getChildren().get(0).setScaleY(1.2 + m*0.2);
+				System.out.println(t.getWrappingWidth());
 				t.setWrappingWidth(t.getWrappingWidth() + 15);
 			}else if(r==0){
 				shape.getChildren().get(0).setScaleX(1.0 + m*0.2);
@@ -59,7 +64,11 @@ public class NodeDrawer {
 			}
 			break;
 		case CONTEXT:	//rounded rectangle
-			//System.out.println(description.getText().length());
+			
+			if(t.getWrappingWidth() < 70){
+				t.setWrappingWidth(70);
+			}
+			
 			r = (length-40)%32;
 			m = (length-40)/32;
 			if(r==0 && delete == false){
@@ -73,7 +82,11 @@ public class NodeDrawer {
 			}
 			break;
 		case SOLUTION:	//circle
-			//System.out.println(description.getText().length());
+			
+			if(t.getWrappingWidth() < 50){
+				t.setWrappingWidth(50);
+			}
+			
 			r = (length-45)%34;
 			m = (length-45)/34;
 			if(r==0 && delete == false){
@@ -88,7 +101,12 @@ public class NodeDrawer {
 			break;
 		case JUSTIFICATION:
 		case ASSUMPTION:
-			//System.out.println(description.getText().length());
+			
+
+			if(t.getWrappingWidth() < 70){
+				t.setWrappingWidth(70);
+			}
+			
 			r = (length-45)%34;
 			m = (length-45)/34;
 			if(r==0 && delete == false){
