@@ -478,7 +478,8 @@ public class View {
 
 				// Handle making connection if in progress
 				if (makingConnection && selectedNode != null) {
-					controller.createConnection(selectedNode, node);
+					boolean filled = (boolean) toolGroup.getSelectedToggle().getUserData();
+					controller.createConnection(selectedNode, node, filled);
 				}
 
 				selectedNode = node;
