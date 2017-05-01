@@ -58,9 +58,13 @@ public class View {
 		FileChooser fileChooser = new FileChooser();
 
 		Button newBtn = new Button("New");
+		newBtn.setFocusTraversable(false);
 		Button importBtn = new Button("Import");
+		importBtn.setFocusTraversable(false);
 		Button exportBtn = new Button("Export");
+		exportBtn.setFocusTraversable(false);
 		Button saveBtn = new Button("Save");
+		saveBtn.setFocusTraversable(false);
 
 		exportBtn.setOnAction(new EventHandler<ActionEvent>()
 		{
