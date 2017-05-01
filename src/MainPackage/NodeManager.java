@@ -1,5 +1,4 @@
 package MainPackage;
-import SAC.SAC;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -16,7 +15,6 @@ import Node.Connection;
 import Node.MainNode;
 
 public class NodeManager {
-	private SAC sac = new SAC();
 	private ArrayList<Node> nodes = new ArrayList<Node>();
 	private ArrayList<Connection> connections = new ArrayList<Connection>();
 	private Gson gson;
@@ -59,10 +57,6 @@ public class NodeManager {
 		}
 
 		nodes.remove(n);
-	}
-
-	public void setSACRootNode(Node n) {
-		sac.setRootNode(n);
 	}
 
 	public ArrayList<Connection> getConnections() {
