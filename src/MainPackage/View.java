@@ -601,6 +601,24 @@ public class View {
 				});
 			}
 		});
+		
+		// Handles height changes in nodes, essential to connections importing correctly
+		connection.getStart().getPane().heightProperty().addListener(new ChangeListener<Number>() {
+			@Override 
+			public void changed(ObservableValue<? extends Number> ov, Number ob, Number nb) {
+				connection.getStart().getPane().updateNodeProperties();
+				connectionDrawer.optimizeConnectionPlacement(arrowObject, connection.getStart(), connection.getEnd());
+				arrowObject.updateArrowheadLocation();
+			}
+		});
+		connection.getEnd().getPane().heightProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> ov, Number ob, Number nb) {
+				connection.getEnd().getPane().updateNodeProperties();
+				connectionDrawer.optimizeConnectionPlacement(arrowObject, connection.getStart(), connection.getEnd());
+				arrowObject.updateArrowheadLocation();
+			}
+		});
 
 		// If either node ever moves, update arrowhead and connection to match
 		connection.getStart().getPane().localToParentTransformProperty().addListener(new ChangeListener<Transform>() {
