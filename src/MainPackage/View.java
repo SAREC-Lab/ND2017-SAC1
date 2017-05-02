@@ -58,8 +58,6 @@ public class View {
 
 		ToolBar leftBar = sidebar.createToolBox();
 
-		Button newBtn = new Button("New");
-		newBtn.setFocusTraversable(false);
 		Button importBtn = new Button("Import");
 		importBtn.setFocusTraversable(false);
 		Button exportBtn = new Button("Export");
@@ -72,7 +70,6 @@ public class View {
 		ToolBar topBar = new ToolBar();
 		topBar.prefWidthProperty().bind(windowStage.widthProperty());
 		topBar.getItems().addAll( 
-				newBtn,
 				importBtn,
 				exportBtn,
 				saveBtn);
@@ -125,6 +122,7 @@ public class View {
 				try {
 					if (file != null) {
 						controller.traverse(true,file);
+						tabPane.getSelectionModel().getSelectedItem().setText(file.getName() + ".sac");
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -142,6 +140,7 @@ public class View {
 				try {
 					if (file != null) {
 						controller.load(file);
+						tabPane.getSelectionModel().getSelectedItem().setText(file.getName() + ".sac");
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
