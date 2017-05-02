@@ -40,6 +40,7 @@ import javafx.scene.layout.VBox;
 
 public class View {
 
+	private Stage windowStage;
 	private Scene scene;
 	private BorderPane root;
 	private TabPane tabPane;
@@ -51,11 +52,11 @@ public class View {
 
 	public View(Stage windowStage) {
 		
+		this.windowStage = windowStage;
 		root = new BorderPane();
 		sidebar = new Sidebar();
 
 		ToolBar leftBar = sidebar.createToolBox();
-		FileChooser fileChooser = new FileChooser();
 
 		Button newBtn = new Button("New");
 		newBtn.setFocusTraversable(false);
@@ -66,57 +67,7 @@ public class View {
 		Button saveBtn = new Button("Save");
 		saveBtn.setFocusTraversable(false);
 
-		exportBtn.setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent event){
-				fileChooser.setTitle("Save File");
-				File file = fileChooser.showSaveDialog(windowStage);
-				try {
-					if (file != null) {
-						controller.traverse(false,file);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-		});
-		saveBtn.setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent event){
-				fileChooser.setTitle("Save File");
-				File file = fileChooser.showSaveDialog(windowStage);
-				try {
-					if (file != null) {
-						controller.traverse(true,file);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-		});
-		importBtn.setOnAction(new EventHandler<ActionEvent>()
-		{
-			@Override
-			public void handle(ActionEvent event){
-				fileChooser.setTitle("Save File");
-				File file = fileChooser.showOpenDialog(windowStage);
-				try {
-					if (file != null) {
-						controller.load(file);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-		});
+		addFileManipulationHandlers(importBtn, exportBtn, saveBtn);
 
 		ToolBar topBar = new ToolBar();
 		topBar.prefWidthProperty().bind(windowStage.widthProperty());
@@ -134,7 +85,6 @@ public class View {
 		clickLocation = new Point();
 		nodeDrawer = new NodeDrawer();
 		connectionDrawer = new ConnectionDrawer();
-		sidebar.makingConnection = false;
 		scene = new Scene(root, 1100, 619);	// Hard coded temporarily
 		windowStage.setScene(scene);
 		windowStage.setTitle("Safety Assurance Case Editor");
@@ -143,6 +93,62 @@ public class View {
 
 	public void setController(Controller c) {
 		controller = c;
+	}
+	
+	// Add handlers to import and export buttons
+	private void addFileManipulationHandlers(Button importBtn, Button exportBtn, Button saveBtn) {
+		FileChooser fileChooser = new FileChooser();
+		
+		exportBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				fileChooser.setTitle("Export File");
+				File file = fileChooser.showSaveDialog(windowStage);
+				try {
+					if (file != null) {
+						controller.traverse(false,file);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		});
+		
+		saveBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				fileChooser.setTitle("Save File");
+				File file = fileChooser.showSaveDialog(windowStage);
+				try {
+					if (file != null) {
+						controller.traverse(true,file);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		});
+		
+		importBtn.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event){
+				fileChooser.setTitle("Import File");
+				File file = fileChooser.showOpenDialog(windowStage);
+				try {
+					if (file != null) {
+						controller.load(file);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		});
 	}
 
 	private void initializeTabPane() {
@@ -170,7 +176,7 @@ public class View {
 		Tab newTab = new Tab("unnamed.sac");
 		ScrollPane scrollPane = new ScrollPane();
 		Pane workPane = new Pane();
-		workPane.setMinSize(1500, 1500);	// TODO: Make pane expand as dragging of nodes occurs
+		workPane.setMinSize(1500, 1500);
 		scrollPane.setContent(workPane);
 
 		// Handle clicks directly to pane by delegating to observing controller
@@ -258,9 +264,9 @@ public class View {
 					sidebar.makingConnection = false;
 					deselectToggledNode();
 				}
-
+				
+				// Show node details in sidebar when selected
 				sidebar.selectedNode = node;
-				sidebar.addRootBtn.setVisible(false);
 				sidebar.deleteBtn.setVisible(true);
 				sidebar.title.setVisible(true);
 				sidebar.description.setVisible(true);
@@ -341,6 +347,7 @@ public class View {
 		arrow.updateArrowheadLocation();
 	}
 
+	// Add handlers to connection that allow it to update according to its nodes and also be deleted
 	private void addEventHandlersToConnection(Connection connection, Arrow arrowObject) {
 		Group arrow = connection.getArrow();
 

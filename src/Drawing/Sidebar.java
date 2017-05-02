@@ -30,22 +30,32 @@ public class Sidebar{
 	public boolean makingConnection;
 	public Node selectedNode;
 	public ColorPicker outlinePicker, fillPicker;
-	public TextArea description;
 	public TextField title;
+	public TextArea description;
 	public Button deleteBtn;
-	public Button addRootBtn;
 	
 	public Sidebar(){
-		createToolBox();
+		// Group for tools so only one can be toggled at a time
+		toolGroup = new ToggleGroup();
+		
+		// Tracked when tools selected
+		makingConnection = false;
+		selectedNode = null;
+		
+		// Node color pickers
+		fillPicker = new ColorPicker();
+		outlinePicker = new ColorPicker();
+		
+		// Node editing portion of toolbar
+		title = new TextField();
+		description = new TextArea();
+		deleteBtn = new Button("Delete");
 	}
 	
 	public ToolBar createToolBox() {
 
 		Text title1 = new Text("ToolBox");
 		Text title2 = new Text("Style");
-
-		// Group for tools so only one can be toggled at a time
-		toolGroup = new ToggleGroup();
 
 		//Goal Button
 		ToggleButton goalBtn = new ToggleButton("Goal");
@@ -180,12 +190,10 @@ public class Sidebar{
 
 		//Fill Button
 		Text fillTitle = new Text("Fill");
-		fillPicker = new ColorPicker();
 		fillPicker.setValue(Color.WHITE);
 
 		//Outline Button
 		Text outlineTitle = new Text("Outline");
-		outlinePicker = new ColorPicker();
 		outlinePicker.setValue(Color.BLACK);		
 
 
@@ -198,27 +206,19 @@ public class Sidebar{
 		grid.add(outlinePicker,1,1);
 
 		//editable text boxers
-		title = new TextField();
 		title.setPromptText("Title");
 		title.setPrefColumnCount(10);
 
-
-		description = new TextArea();
 		description.setPromptText("Description");
 		description.setPrefColumnCount(10);
 		description.setPrefRowCount(4);
 		description.setWrapText(true);
 
-		deleteBtn = new Button("Delete");
 		deleteBtn.setMaxWidth(200);
-
-		addRootBtn = new Button("Add Root");
-		addRootBtn.setMaxWidth(200);
 
 		deleteBtn.setVisible(false);
 		title.setVisible(false);
 		description.setVisible(false);
-		addRootBtn.setVisible(false);
 
 
 		//add items to toolbar
@@ -241,10 +241,8 @@ public class Sidebar{
 				new Separator(),
 				title,
 				description,
-				deleteBtn,
-				addRootBtn);
+				deleteBtn);
 
 		return toolbar;
-
 	}
 }
