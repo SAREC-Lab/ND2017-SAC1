@@ -254,6 +254,9 @@ public class View {
 				if (sidebar.makingConnection && sidebar.selectedNode != null) {
 					boolean filled = (boolean) sidebar.toolGroup.getSelectedToggle().getUserData();
 					controller.createConnection(sidebar.selectedNode, node, filled);
+					sidebar.selectedNode = null;
+					sidebar.makingConnection = false;
+					deselectToggledNode();
 				}
 
 				sidebar.selectedNode = node;
@@ -301,16 +304,6 @@ public class View {
 					}
 
 				});
-				if(node.getNodeType() == NodeType.GOAL){
-					sidebar.addRootBtn.setVisible(true);
-					sidebar.addRootBtn.setOnAction(new EventHandler <ActionEvent>()
-					{
-						@Override
-						public void handle(ActionEvent event){
-							controller.addRoot(node);
-						}
-					});
-				}
 			}
 		});
 
@@ -346,9 +339,6 @@ public class View {
 		connection.getStart().getPane().updateNodeProperties();
 		connection.getEnd().getPane().updateNodeProperties();
 		arrow.updateArrowheadLocation();
-		sidebar.selectedNode = null;
-		sidebar.makingConnection = false;
-		deselectToggledNode();
 	}
 
 	private void addEventHandlersToConnection(Connection connection, Arrow arrowObject) {
@@ -373,6 +363,24 @@ public class View {
 					}
 
 				});
+			}
+		});
+		
+		// Handles height changes in nodes, essential to connections importing correctly
+		connection.getStart().getPane().heightProperty().addListener(new ChangeListener<Number>() {
+			@Override 
+			public void changed(ObservableValue<? extends Number> ov, Number ob, Number nb) {
+				connection.getStart().getPane().updateNodeProperties();
+				connectionDrawer.optimizeConnectionPlacement(arrowObject, connection.getStart(), connection.getEnd());
+				arrowObject.updateArrowheadLocation();
+			}
+		});
+		connection.getEnd().getPane().heightProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> ov, Number ob, Number nb) {
+				connection.getEnd().getPane().updateNodeProperties();
+				connectionDrawer.optimizeConnectionPlacement(arrowObject, connection.getStart(), connection.getEnd());
+				arrowObject.updateArrowheadLocation();
 			}
 		});
 
