@@ -49,7 +49,7 @@ public class Controller{
 	}
 
 	public void traverse(boolean b, File file) throws IOException {
-		manager.traverse(b,file);
+		manager.saveToFile(b,file);
 	}
 	
 	private boolean validateConnection(Node start, Node end, boolean filled) {

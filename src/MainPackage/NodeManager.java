@@ -67,7 +67,7 @@ public class NodeManager {
 		return nodes;
 	}
 
-	public void traverse(boolean b, File file) throws IOException {
+	public void saveToFile(boolean b, File file) throws IOException {
 		// convert connections list to JSON string
 		String str = gson.toJson(connections);
 
