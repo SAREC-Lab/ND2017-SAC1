@@ -104,7 +104,7 @@ public class View {
 				File file = fileChooser.showSaveDialog(windowStage);
 				try {
 					if (file != null) {
-						controller.traverse(false,file);
+						controller.save(false,file);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -121,7 +121,7 @@ public class View {
 				File file = fileChooser.showSaveDialog(windowStage);
 				try {
 					if (file != null) {
-						controller.traverse(true,file);
+						controller.save(true,file);
 						tabPane.getSelectionModel().getSelectedItem().setText(file.getName() + ".sac");
 					}
 				} catch (IOException e) {

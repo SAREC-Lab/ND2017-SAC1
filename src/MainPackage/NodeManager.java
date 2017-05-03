@@ -14,23 +14,29 @@ import java.util.Iterator;
 import Node.Connection;
 import Node.MainNode;
 
+//NodeManager acts as the model in MVC
 public class NodeManager {
 	private ArrayList<Node> nodes = new ArrayList<Node>();
 	private ArrayList<Connection> connections = new ArrayList<Connection>();
 	private Gson gson;
 
 	public NodeManager() {
+		//gson is used to save and load JSON files
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(Node.class, new NodeDeserializer<Node>());
 		gsonBuilder.setPrettyPrinting();
 		gson = gsonBuilder.create();
 	}
 
+	//add node
 	public void addNode(Node n) {
 		nodes.add(n);
 	}
 
+	//remove node
 	public void removeNode(Node n) {
+		
+		//for each connection, if it connects to the node, remove the connection
 		Iterator<Connection> connection_it = connections.iterator();
 		while(connection_it.hasNext()) {
 			Connection connection = connection_it.next();
@@ -39,6 +45,7 @@ public class NodeManager {
 			}
 		}
 
+		//for each of the node's parents, remove the node from the parent's list of children
 		Iterator<MainNode> parent_it = n.getParents().iterator();
 		while (parent_it.hasNext()) {
 			Node parent = parent_it.next();
@@ -47,8 +54,11 @@ public class NodeManager {
 			}
 		}
 
+		//if the node is a MainNode
 		if (n.getClass() == MainNode.class) {
 			MainNode main_node = (MainNode) n;
+			
+			//for each of the node's children, remove the node from the child's list of parents
 			Iterator<Node> child_it = main_node.getChildren().iterator();
 			while (child_it.hasNext()) {
 				Node child = child_it.next();
@@ -56,6 +66,7 @@ public class NodeManager {
 			}
 		}
 
+		//remove node from list of nodes
 		nodes.remove(n);
 	}
 
@@ -67,7 +78,8 @@ public class NodeManager {
 		return nodes;
 	}
 
-	public void traverse(boolean b, File file) throws IOException {
+	//save the model in JSON format
+	public void save(boolean b, File file) throws IOException {
 		// convert connections list to JSON string
 		String str = gson.toJson(connections);
 
@@ -77,15 +89,27 @@ public class NodeManager {
 		writer.close();
 	}
 
+	//add a connection
 	public void addConnection(Connection r) {
+		
+		//add to connections list
 		connections.add(r);
+		
 		MainNode main_node = (MainNode) r.getStart();
+	
+		//add child to parent's list of children
 		main_node.addChild(r.getEnd());
+		
+		//add parent to child's list of parents
 		r.getEnd().addParent(main_node);
 	}
 
+	//get all of the connections that connect a node to any other node
 	public ArrayList<Connection> getNodeConnections(Node n) {
+		
 		ArrayList<Connection> conns = new ArrayList<Connection>();
+		
+		//for each connection, if n is the start or end node, add to conns
 		for (Connection c : connections) {
 			if (c.getStart() == n || c.getEnd() == n) {
 				conns.add(c);
@@ -94,6 +118,7 @@ public class NodeManager {
 		return conns;
 	}
 
+	//print nodes; used for debugging purposes
 	public void printNodes() {
 		System.out.println("TOTAL NODES: " + nodes.size());
 		System.out.println("TOTAL CONNECTIONS:" + connections.size());
@@ -106,16 +131,25 @@ public class NodeManager {
 		}
 	}
 
+	//remove a connection
 	public void removeConnection(Connection connection) {
 		connections.remove(connection);
+		
+		//if the parent is a MainNode
 		if (connection.getStart().getClass() == MainNode.class) {
 			MainNode main_node = (MainNode) connection.getStart();
+			
+			//remove parent from child's list of parents
 			connection.getEnd().removeParent(main_node);
+			
+			//remove child from parent's list of children
 			main_node.removeChild(connection.getEnd());
 		}
 	}
 
+	//load model from JSON file
 	public void load(File file) throws IOException {
+		
 		// clear nodes and connections from model
 		connections.clear();
 		nodes.clear();
@@ -147,6 +181,7 @@ public class NodeManager {
 		}
 	}
 
+	//return node with the unique id number
 	private Node getNodeByID(int id) {
 		for(Node n: nodes) {
 			if(n.getId() == id) {

@@ -10,11 +10,13 @@ public abstract class Node {
 	private String name;
 	private String description;
 	private NodeType nodeType;
-	Point coordinates;
+	Point coordinates; //location
 	private Color outline;
 	private Color fill;
-	private int id;
-	private transient NodePane pane;
+	private int id; //unique
+	private transient NodePane pane; //pane for node in the view
+	
+	//list of parents -- nodes that point to this node
 	private transient ArrayList<MainNode> parents = new ArrayList<MainNode>();
 
 	public Node() {
@@ -102,6 +104,7 @@ public abstract class Node {
 		return parents;
 	}
 	
+	//returns true if node is a parent of this
 	public boolean isParentOf(Node node) {
 
 		//tree traversal

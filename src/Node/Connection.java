@@ -2,12 +2,13 @@ package Node;
 
 import javafx.scene.Group;
 
+//Represents a connection between two nodes: start -> end
 public class Connection {
 	
-	private transient Group arrow;
+	private transient Group arrow; //representation in the view
 	private Node start;
 	private Node end;
-	private boolean filled;
+	private boolean filled; //whether or not arrow is filled
 
 	public Connection() {
 	}

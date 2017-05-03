@@ -10,6 +10,7 @@ public class NodeTest {
 
 	@Test
 	public void testEqualsAndHash() {
+		//create 5 nodes to test
 		MainNode mainNode1 = new MainNode("G1", "Goal Node", NodeType.GOAL, new Point(0,0),0);
 		MainNode mainNode2 = new MainNode("G1", "Goal Node", NodeType.GOAL, new Point(0,1),0);
 		MainNode mainNode3 = new MainNode("G2", "Goal Node", NodeType.GOAL, new Point(0,2),2);
@@ -32,9 +33,10 @@ public class NodeTest {
 	}
 
 	@Test
+	//Test constructors for MainNode and SupportingNode
 	public void testNodeConstructors() {
 
-		//Exceptions should be thrown for both
+		//Exceptions should be thrown because ASSUMPTION is not a MainNode
 		try {
 			new MainNode("G1", "Goal Node", NodeType.ASSUMPTION, new Point(0,0),0);
 			assert(false);
@@ -43,7 +45,7 @@ public class NodeTest {
 
 		}
 
-		//Exceptions should be thrown for both
+		//Exceptions should be thrown because GOAL is not a Supporting Node
 		try {
 			new SupportingNode("s1", "Support Node", NodeType.GOAL, new Point(0,0),0);
 			assert(false);
