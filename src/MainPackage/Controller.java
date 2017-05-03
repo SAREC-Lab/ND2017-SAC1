@@ -63,8 +63,8 @@ public class Controller{
 	//save the model in a JSON format
 	//TODO: distinguish between exporting and saving
 	//boolean b can be used to distinguish between the two
-	public void save(boolean b, File file) throws IOException {
-		manager.save(b,file);
+	public void saveToFile(boolean b, File file) throws IOException {
+		manager.saveToFile(b,file);
 	}
 	
 	//return true if the connection from start to end if valid

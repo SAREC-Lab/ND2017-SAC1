@@ -79,7 +79,7 @@ public class NodeManager {
 	}
 
 	//save the model in JSON format
-	public void save(boolean b, File file) throws IOException {
+	public void saveToFile(boolean b, File file) throws IOException {
 		// convert connections list to JSON string
 		String str = gson.toJson(connections);
 
