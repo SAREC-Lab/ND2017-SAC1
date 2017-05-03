@@ -284,13 +284,13 @@ public class View {
 				{
 					@Override
 					public void handle(KeyEvent event) {
-						Boolean delete = new Boolean(false);
+						boolean delete = false;
 						node.setDescription(sidebar.description.getText());
 						((Text)((VBox) (shape.getChildren().get(1))).getChildren().get(1)).setText(sidebar.description.getText());
 						if (event.getCode().equals(KeyCode.BACK_SPACE)) {
 							delete = true;
 						}
-						nodeDrawer.resize(node, shape, delete);
+						nodeDrawer.resize(node, delete);
 					}
 				});
 				sidebar.deleteBtn.setOnAction(new EventHandler<ActionEvent>()

@@ -39,4 +39,29 @@ public class CircleStrategy implements NodeDrawingStrategy {
 		return stack;	
 	}
 
+	@Override
+	public void resize(Node node, boolean delete) {
+		NodePane pane = node.getPane();
+		Text t = ((Text)((VBox)pane.getChildren().get(1)).getChildren().get(1));
+		Text description = new Text(node.getDescription());
+		int length = description.getText().length();
+		int r = 1, m = 1;
+		
+		if(t.getWrappingWidth() < 50){
+			t.setWrappingWidth(50);
+		}
+		
+		r = (length-45)%34;
+		m = (length-45)/34;
+		if(r==0 && delete == false){
+			pane.getChildren().get(0).setScaleX(1.2 + m*0.2);
+			pane.getChildren().get(0).setScaleY(1.2 + m*0.2);
+			t.setWrappingWidth(t.getWrappingWidth() + 10);
+		}else if(r==0){
+			pane.getChildren().get(0).setScaleX(1.0 + m*0.2);
+			pane.getChildren().get(0).setScaleY(1.0 + m*0.2);
+			t.setWrappingWidth(t.getWrappingWidth() - 10);
+		}
+	}
+
 }

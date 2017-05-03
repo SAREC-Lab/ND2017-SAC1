@@ -1,9 +1,7 @@
 package Drawing;
 
 import Node.Node;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import Node.NodeType;
 
 public class NodeDrawer {
@@ -15,6 +13,11 @@ public class NodeDrawer {
 		node.setOutline(outline);
 		setStrategy(node.getNodeType());
 		return strategy.drawNode(node, outline, fill);
+	}
+	
+	public void resize(Node node, boolean delete){
+		setStrategy(node.getNodeType());
+		strategy.resize(node, delete);
 	}
 	
 	public void setStrategy(NodeType type) {
@@ -35,91 +38,4 @@ public class NodeDrawer {
 			break;
 		}
 	}
-	
-	public void resize(Node node, NodePane shape, Boolean delete){
-		Text t = ((Text)((VBox)shape.getChildren().get(1)).getChildren().get(1));
-		Text description = new Text(node.getDescription());
-		int length = new Integer(description.getText().length());
-		int r = new Integer(1);
-		int m = new Integer(1);
-		switch (node.getNodeType()) {
-		case GOAL:
-		case STRATEGY:
-			
-			if(t.getWrappingWidth() < 70){
-				t.setWrappingWidth(70);
-			}
-			
-			r = (length-45)%34;
-			m = (length-45)/34;
-			if(r==0 && delete == false){
-				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
-				shape.getChildren().get(0).setScaleY(1.2 + m*0.2);
-				System.out.println(t.getWrappingWidth());
-				t.setWrappingWidth(t.getWrappingWidth() + 15);
-			}else if(r==0){
-				shape.getChildren().get(0).setScaleX(1.0 + m*0.2);
-				shape.getChildren().get(0).setScaleY(1.0 + m*0.2);
-				t.setWrappingWidth(t.getWrappingWidth() - 15);
-			}
-			break;
-		case CONTEXT:	//rounded rectangle
-			
-			if(t.getWrappingWidth() < 70){
-				t.setWrappingWidth(70);
-			}
-			
-			r = (length-40)%32;
-			m = (length-40)/32;
-			if(r==0 && delete == false){
-				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
-				shape.getChildren().get(0).setScaleY(1.2 + m*0.3);
-				t.setWrappingWidth(t.getWrappingWidth() + 10);
-			}else if(r==0){
-				shape.getChildren().get(0).setScaleX(1.0 + m*0.2);
-				shape.getChildren().get(0).setScaleY(1.0 + m*0.2);
-				t.setWrappingWidth(t.getWrappingWidth() - 10);
-			}
-			break;
-		case SOLUTION:	//circle
-			
-			if(t.getWrappingWidth() < 50){
-				t.setWrappingWidth(50);
-			}
-			
-			r = (length-45)%34;
-			m = (length-45)/34;
-			if(r==0 && delete == false){
-				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
-				shape.getChildren().get(0).setScaleY(1.2 + m*0.2);
-				t.setWrappingWidth(t.getWrappingWidth() + 10);
-			}else if(r==0){
-				shape.getChildren().get(0).setScaleX(1.0 + m*0.2);
-				shape.getChildren().get(0).setScaleY(1.0 + m*0.2);
-				t.setWrappingWidth(t.getWrappingWidth() - 10);
-			}
-			break;
-		case JUSTIFICATION:
-		case ASSUMPTION:
-			
-
-			if(t.getWrappingWidth() < 70){
-				t.setWrappingWidth(70);
-			}
-			
-			r = (length-45)%34;
-			m = (length-45)/34;
-			if(r==0 && delete == false){
-				shape.getChildren().get(0).setScaleX(1.2 + m*0.2);
-				shape.getChildren().get(0).setScaleY(1.2 + m*0.2);
-				t.setWrappingWidth(t.getWrappingWidth() + 10);
-			}else if(r==0){
-				shape.getChildren().get(0).setScaleX(1.0 + m*0.2);
-				shape.getChildren().get(0).setScaleY(1.0 + m*0.2);
-				t.setWrappingWidth(t.getWrappingWidth() - 10);
-			}
-			break;
-		}
-	}
-	
 }
