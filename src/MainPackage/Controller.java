@@ -48,7 +48,7 @@ public class Controller{
 		manager.removeNode(n);
 	}
 
-	public void traverse(boolean b, File file) throws IOException {
+	public void saveToFile(boolean b, File file) throws IOException {
 		manager.saveToFile(b,file);
 	}
 	
